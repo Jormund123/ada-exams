@@ -1,0 +1,159 @@
+Chapter II: Graph Similarity
+II.1: Introduction
+Professor Dr. Petra Mutzel
+Abteilung fur Computational Analytics ¨
+Institut fur Informatik (Abt. 1) ¨
+Universit¨at Bonn
+WiSe 2025/26 VO 5 10 November 2025
+1 / 19
+Outline
+1 Introduction to Graph Similarity
+Motivation
+Approaches to Graph Similarity
+2 / 19
+Introduction Motivation
+Motivation: Rational Drug Design
+Which molecules are active against disease X?
+Which molecules have a similar function/effect? (Reduction of side
+effects)
+Which molecules may have an increased effectiveness?
+High-throughput screening for promising candidates
+Molecules can be modelled as graphs with attributes
+Direct relationship between structure and effects
+→ Graph similarity
+3 / 19
+Introduction Motivation
+Rational Drug Design: GraBaDrug
+DFG SPP Algorithms for Big Data
+explorative analysis of molecule data bases ← Scaffold Hunter
+similarity search on molecular structures ← graph similarity, clustering
+creation of virtual molecule data bases for drug design
+← CHIPMUNK: 95 mio. molecules with ≤ 700 atoms, 90 attributes
+Nature Chem. Biol. 2009: Wetzel, Klein, Renner, Rauh, Oprea, Mutzel, Waldmann
+ChemMedChem 2018: Humbeck, Weigang, Sch¨afer, Mutzel Koch + Cover Feature, ...
+4 / 19
+Introduction Motivation
+CHIPMUNK: A Virtual Synthesizable
+Small-Molecule Library for Medicinal Chemistry
+HumbeckWeigangSch¨aferMutzelKochChemMedChem2018+CoverFeature5 / 19
+Introduction Motivation
+Motivation: Four fundamental problems for
+analyzing data (Aggarwal 2015)
+Clustering Classification
+Association Pattern Mining Outlier Detection
+Sources: www.geeksforgeeks.org/, towardsdatascience.com/, www.researchgate.net/
+6 / 19
+Introduction Motivation
+Clustering (Unsupervised Learning)
+Clustering is the task of grouping a set of objects such that objects in the
+same group (cluster) are more similar to each other than objects in
+different groups.
+many possibilities for formal definition
+studied for a long time (statistics, data bases, machine learning)
+recently also in TCS (e.g., data streams)
+useful for data sparsification and sampling approaches → big data
+popular approaches: distance-based, centroid-based (k-Means)
+Sources: www.geeksforgeeks.org/, www.hipparchus.org/, www.nature.com/
+7 / 19
+Introduction Motivation
+Classification (Supervised Learning)
+Given: Training set with labelled items (classes).
+Goal: Train a classifier so that a new item will be assigned to its correct
+class.
+many variations (decisions, predictions)
+discrete labels: mostly studied in ML community
+continuous labels: regression mostly studied in statistics
+popular approaches: SVMs (kernel), deep learning, k-NN, logistic
+regression, Bayes classifiers, decision tree method, clustering
+Sources: towardsdatascience.com/, www.ritchieng.com/logistic-regression/, medium.freecodecamp.org/
+8 / 19
+Introduction Motivation
+Association Pattern Mining
+Goal: find inherent regularities in the data
+Frequent pattern mining: find frequent items (occuring at least minimum
+support times)
+Association pattern mining: generalization also based on association rules
+widely studied in data mining
+useful for deriving similarity measures on data sets
+useful for clustering, classification, outlier detection
+Sources: medium.freecodecamp.org/, www.kdnuggets.com/
+9 / 19
+Introduction Motivation
+Outlier Detection
+Find data items that are different from the majority of the given data.
+outlier may reflect errors in the data or belong to rare events
+methods: statistical tests, models based on spatial proximity (k-NN),
+density-based methods, ...
+methods: clustering, classification, association pattern mining
+Sources: towardsdatascience.com/, www.kdnuggets.com/
+10 / 19
+Introduction Motivation
+Four fundamental problems for analyzing data
+(Aggarwal 2015)
+Clustering Classification
+Association Pattern Mining Outlier Detection
+Important basis for all these: Distances and Similarities
+Sources: www.geeksforgeeks.org/, towardsdatascience.com/, www.researchgate.net/
+11 / 19
+Introduction Motivation
+When are two graphs similar?
+SURVEY
+12 / 19
+Introduction Motivation
+When are two graphs identical? Graph Isomorphism
+Definition
+Let G = (VG , EG ) and H = (VH, EH) be simple graphs. A bijective
+mapping π : VG → VH is called graph isomorphism if the following holds:
+∀ v,w ∈ VG : (v,w) ∈ EG ⇐⇒ (π(v), π(w)) ∈ EH
+G H
+13 / 19
+Introduction Motivation
+Graph Isomorphism
+Definition
+Let G = (VG , EG ) and H = (VH, EH) be simple graphs. A bijective
+mapping π : VG → VH is called graph isomorphism if the following holds:
+∀ v,w ∈ VG : (v,w) ∈ EG ⇐⇒ (π(v), π(w)) ∈ EH
+G H
+Two graphs are called isomorphic (G1 ≃ G2), if a graph isomorphism
+exists.
+14 / 19
+Introduction Motivation
+Are these graphs isomorphic to each other?
+SURVEY
+15 / 19
+Introduction Motivation
+Graph Isomorphism Problem
+Definition (Graph Isomorphism Problem)
+Given: simple graphs G and H
+Find: Is G isomorphic to H, i.e., G ≃ H?
+Remarks:
+If graphs have vertex and/or edge labels or attributes, definition will
+be extended to the labels (various possibilities)
+Complexity: OPEN
+Quasipolynomial algorithm: n
+(log n)
+O(1) [Babai 2015/17]
+Practice: mostly solvable very fast
+→ Weisfeiler-Leman algorithm (Section II.2)
+16 / 19
+Introduction Motivation
+Approaches to Graph Similarity
+17 / 19
+Introduction Motivation
+Graph Embedding
+feature vector feature space
+Generate a feature vector for each graph in the given graph data set
+Use your favorite (data) classification/clustering method
+Sources: https://www.kdd.org/kdd2019/accepted-papers/view/learning-interpretable-metric-between-graphs-convexformulation-and-computa
+18 / 19
+Introduction Approaches to Graph Similarity
+Graph Similarity
+Approaches
+Weisfeiler-Leman approaches → Section II.2
+Distance-based approaches → Section II.3
+graph edit distance
+Frobenius distance
+(Subgraph) isomorphism based approaches
+For Section II.3 we need Linear Programming and Integer Linear Programs
+Source: gedevo.mpi-inf.mpg.de (right)
+19 / 19

@@ -1,0 +1,60 @@
+RHEINISCHE
+FRIEDRICH-WILHELMSUNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Exercise Sheet 7
+Discussion:
+CW 50
+Exercise 7.1 – Properties of graph edit paths and costs (5 Points)
+a) Let G and H be to labeled graphs with |V (G)| ≤ |V (H)|, and let the edit costs be one for all edit
+operations. Show that an optimal edit operation path does not contain vertex deletion in G. (2p)
+b) Show that the GED is a metric for unit edit costs. (2p)
+c) Give edit cost functions such that GED is not a metric. (1p)
+Exercise 7.2 – Linear programming application: Beverage production (6 Points)
+A beverage-company is planning their next product-cycle with two types of beverages A and B. For the
+production of one litre A three hours of machine-working-hours are needed and for product B four hours.
+The number of overall available machine-working-hours is 20.000 hours.
+The ingredients for the two products differ and the costs for producing one litre of A amount to 3€ and the
+costs for one litre of B to 2€. The company has a budget of 4000€. Additionally, the firm gets some public
+subsidies, such that producing one litre of A adds 2,25€ to the budget and one litre of B adds 1,35€.
+Further, the company wants to balance the sales of the beverages, i.e., the number of produced beverages
+of the two types should differ by at most a factor of 2.
+The company naturally wants to maximize its profit. They have negotiated a sales price of 5€ per litre of
+beverage A and 4,5€ per litre of beverage B.
+a) Formulate the problem as a linear program.
+b) Visualize the LP (including the objective function). Does a solution with profit 10.000€ exist?
+c) What is the optimum solution and what is its objective value?
+d) An improvement of the machine could increase the running-time by 2.000 hours, but it would cost
+250€. Would you improve the machine or would you keep the current production plan? Justify your
+answer.
+Exercise 7.3 – Graph coloring ILP formulations (6 Points)
+A valid k-coloring of an undirected graph G = (V,E) is a mapping f : V → {1,...,k}, such that f (v ) ̸= f (w)
+for all {v,w} ∈ E. The graph (vertex) coloring problem wants to solve the question: What is the minimal
+number k for which G has a k-coloring?
+An integer linear program (ILP) is a linear program with the additional constraint that x ∈ Z
+n
+.
+a) Give an ILP formulation of the graph coloring problem.
+b) Give another different ILP formulation of the graph coloring problem.
+c) Give bounds for the numbers of constraints and variables of the two formulations.
+d) Discuss possible problems of the two formulations and make a guess which formulation works better
+in practice.
+Page 1 of 2
+Exercise 7.4 – Weisfeiler-Leman: Connected counter example (3 Points)
+The standard example in the lecture of two non-isomorhic graphs that could not be distinguished by the
+1-dimensional Weisfeiler-Leman algorithm are the following 2-regular graphs:
+Figure 1
+Give an example of two non-isomorphic connected undirected graphs which can also not be distinguished
+by the 1-dimensional Weisfeiler-Leman algorithm.
+Hint: You only need to slightly modify the graphs in the given example.
+Page 2 of 2

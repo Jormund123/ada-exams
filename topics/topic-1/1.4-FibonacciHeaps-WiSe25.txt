@@ -1,0 +1,969 @@
+Chapter I: SHORTEST PATHS
+Section 4: Fibonacci Heaps
+Professor Dr. Petra Mutzel
+Computational Analytics
+University of Bonn
+Algorithms for Data Analysis
+Lectures 2/3 October 20/27, 2025
+1
+Overview Fibonacci-Heaps
+4.1 Introduction Fibonacci-Heaps and Fibonacci
+4.2 Abstract Data Type: Priority Queues
+4.3 Introduction to Amortized Analysis
+4.4 Structure and Operations of Fibonacci-Heaps
+4.5 Amortized Analysis of Fibonacci-Heaps
+4.6 Experimental Comparison
+2
+Literature
+• Michael L. Fredman and Robert E. Tarjan: Fibonacci Heaps
+and Their Uses in Improved Network Optimization
+Algorithms, Journal of the Association for Computing
+Machinery, vol 34 (3): 596–615, 1987.
+• Cormen, Leiserson, Rivest, Stein: Introduction to Algorithms,
+any version (e.g. Chapter 19 in Third Edition 2009)
+• But also any other book is fine, e.g., T. Ottmann and P.
+Widmayer: Algorithms and Data Structures, Spektrum
+Akademischer Verlag, 2002
+Sources: https://webprod.cs.rutgers.edu, https://commons.wikimedia.org/wiki/3
+Robert E. Tarjan with Michael R. Garey and
+David S. Johnson some years ago (around 1972)
+Sources: http://dimacs.rutgers.edu/archive/Workshops/Tarjan/materials/old-photos.html
+4
+Leonardo of Pisa
+• Fibonacci = „Son of Bonacci“
+• ca. 1170 – 1240, Pisa
+• Mathematician
+F(n+2)=F(n)+F(n+1)
+• Liber Abaci 1202
+F(1) = 1
+F(2) = 1
+• Famous rabbit task :
+„A certain man put a pair of rabbits in a place surrounded on all sides
+by a wall. How many pairs of rabbits can be produced from that pair
+in a year if it is supposed that every month each pair begets a new
+pair which from the second month on becomes productive?“
+n
+F(n)
+F(n)/
+F(n-1)
+F(n-1)/
+F(n)
+1 2 3 4 5 6 7 8 9 10 11 12
+1 1 2 3 5 8 13 21 34 55 89 144
+1,0 2,0 1,5 1,667 1,60 1,625 1,615 1,619 1,618 1,618 1,618
+1,0 0,5 0,667 0,600 0,625 0,615 0,619 0,618 0,618 0,618 0,618
+Leonardo of Pisa
+• Fibonacci = „Son of Bonacci“
+• ca. 1170 – 1240, Pisa
+• Mathematician
+• Liber Abaci 1202
+F(n+2)=F(n)+F(n+1)
+F(1) = 1
+F(2) = 1
+• Φ=(1+√5)/2 = 1,6180339887…. „golden ratio“
+• Φ=(1-√5)/2 = -0,6180339887… „golden ratio conjugate“
+• Φ-1=2/(1+√5)=-Φ=-(1-√5)/2=0,6180339887…
+n
+F(n)
+F(n)/
+F(n-1)
+F(n-1)/
+F(n)
+1 2 3 4 5 6 7 8 9 10 11 12
+1 1 2 3 5 8 13 21 34 55 89 144
+1,0 2,0 1,5 1,667 1,60 1,625 1,615 1,619 1,618 1,618 1,618
+1,0 0,5 0,667 0,600 0,625 0,615 0,619 0,618 0,618 0,618 0,618
+The Golden Ratio
+Already studied by Euclid (300 BC): „Elements“
+Φ = (1+√5)/2 = 2/(√5-1)=1,6180339887…
+Φ results from the partition of a line segment into two parts of
+lengths a (the longer) and b so that
+The Golden Ratio
+Φ results from the partition of a line segment into two parts of
+lengths a (the longer) and b so that a/b = (a+b)/a
+Construction with ruler and compass (rough sketch):
+C
+1/2
+D
+0
+A B
+Φ-1
+a b
+0 1
+a/b = Φ
+a/(a+b) = Φ-1
+4.2 Abstract Data Type: Priority Queues
+• Applications, e.g.,
+• minimum spanning trees with Prim
+• shortest paths in Dijkstra
+• finding minimum cuts
+• weighted bipartite matching
+• and many more: whenever Priority Queues are
+used that need efficient update operations
+Data Structure supporting operations:
+• Insert
+• ExtractMin
+• DecreaseKey
+9
+ADT Priority Queue
+• Dynamic management of entries with priorities (keys)
+• Operations (needed here):
+– Insert(v,pv) – ExtractMin(): v, pv – DecreaseKey(v, p) // element v with priority pv
+//del+returns: min and its priority
+// element v gets new priority p
+• For ease of notation we suppress pv in the following.
+• How can we realize Priority Queues?
+• E.g., by binary (min-)heap in array
+(ADT: Abstract Data Type)
+10
+Binary Heaps
+Heap property: priority (key) of parent is not
+larger than those of children
+2
+• Insert:
+• ExtractMin:
+• DecreaseKey:
+O(log n)
+O(log n)
+O(log n)
+4 3
+7 6 5 8
+9
+n vertices
+11
+Fibonacci Heaps (Fredman & Tarjan 1987)
+Operation Bin. Heap Fibonacci Heap
+Insert O(log n) O(1)
+ExtractMin O(log n) O(log n)*
+DecreaseKey O(log n) O(1)*
+* Not really fair, since amortized analysis
+12
+4.3 Introduction to Amortized Analysis
+• Idea: measure the average runtime of an operation
+over a sequence of operations in the worst case
+• Guarantees the average performance of each single
+operation within the sequence in worst case
+• Note that a single operation may take more time
+• Useful if we like to analyze sequences of operations
+à worst case running times of the sequence
+• Not to be confused with Average Case Analysis
+13
+Formal definition
+Consider: N operations on data structure
+• let t(m) be the running time of an operation with at most
+m objects in the data structure
+• total running time for N operations: ≦ N t(m)
+• alternative: worst case total running time: t(m,N)
+Definition: the amortized time of an operation in a sequence
+of N operations and a data structure with at most m objects
+is defined as t(m,N) / N.
+14
+Formal definition 2
+Definition (if we want to distinguish between different
+types of operations):
+Let t(m;n1,…,nk) be the worst case total running time of any
+valid arbitrary sequence of ni operations of type σi such that
+the size of X during the sequence never exceeds m.
+• If we have t(m;n1,…,nk) = O(∑niai(m)), then we say that
+σi has amortized runtime tσi(m) = O(ai(m)).
+15
+Methods for Amortized Analysis
+• Aggregate analysis
+• Accounting method
+• Potential method
+We will explain these methods for operations on the data
+structure stack.
+16
+Stack Operations
+• PUSH(S,x): inserts element x on the top of stack S
+• POP(S): deletes and returns the top element of stack S
+• MULTIPOP(S,k): If stack S contains at least k elements, then
+it deletes and returns the top k elements from stack S;
+otherwise all elements of S are deleted and returned
+• STACK_EMPTY(S): returns 1 if stack S is empty, otherwise 0.
+17
+Stack Operation MULTIPOP(S,k)
+MULTIPOP(S,k)
+(1) While not STACK_EMPTY(S) and k>0 do {
+• POP(S)
+• k=k-1
+(2) }
+Remark: we only count the number of calls of POP and PUSH
+Worst case running time on sequence of N operations
+• one call of MULTIPOP(S,k) may last Θ(N) time (if k= Θ(N))
+• analyze up to N mixed calls (PUSH, POP, MULTIPOP)
+➡ total time O(N2)
+We will see: amortized analysis provides better estimations
+18
+Aggregate Analysis
+Idea / Method
+• it is shown that a sequence of N operations will run in worst
+case time T(N)
+• Then the amortized costs per operation are T(N)/N.
+Remarks
+• These costs are the same for each operation, even if the
+types of operation are different.
+• This is the main but important difference to the other
+methods discussed next.
+19
+Aggregate Analysis for Stack
+Analysis of a sequence of N operations
+• An arbitrary sequence of N PUSH, POP, and MULTIPOP
+operations on an initially empty stack can need at most O(N)
+time, since an element cannot be deleted more often than it
+is inserted
+• worst case runtime of sequence of operations: O(N)
+➡ amortized cost of each operation is O(N) / N = O(1)
+20
+Accounting Method
+Idea / Method
+• Operations get some specific costs that can be larger or
+smaller than the real costs.
+• If the amortized costs are larger than the real costs, the
+difference will be assigned as credit to specific objects or
+operations of the data structure.
+• These credits may be taken (later on) for operations for
+which the real costs are larger than the amortized costs.
+• The credits on objects must be non-negative at all time.
+For all sequences and for each operation the following holds:
+sum of the real costs ≦ sum of the amortized costs
+21
+Accounting Method for Stack
+Operation Real costs Amortized costs
+PUSH(S,x) 1 2
+POP(S) 1 0
+MULTIPOP(S,k) min(k,|S|) 0
+We show: each operation in a sequence of N operations PUSH,
+POP, and MULTIPOP can be accounted for.
+• PUSH(S,x) pays for the operation with 1 cost unit for the real
+costs and assigns 1 cost unit as credit on the stack
+• After p push operations, the stack has credits of p units.
+• Each POP(S) or MULTIPOP(k,S) operation needs 1 or min(k,|S|),
+resp., cost units. They can be taken from the stack.
+22
+Potential Method
+Idea / Method
+• Operations get some specific costs that can be larger or
+smaller than the real costs.
+• In contrast to the accounting method, the difference of the
+real and the amortized costs will be assigned to the whole
+data structure in form of a potential of a function.
+• The potential may be used (later on) for operations for
+which the real costs are larger than the amortized costs.
+• The potential function maps each data structure to a real
+number, which is the potential after each operation.
+• Often, the value of the potential function is 0 in the
+beginning and always non-negative.
+23
+Potential Method
+• We describe the potential of the data structure mathematically:
+• Function Φ, which maps each data structure to a real number
+• (Note: this Φ is not the same as the one from the Golden Ratio)
+• Amortized costs of an operation are defined as real costs + ΔΦ
+• Thus also burdened by future costs(Insert)
+or defusing costly operations (ΔΦ negative).
+• Let o1,...,oN a sequence of N operations
+– ai amortized costs for operation oi
+– ti real costs for operation oi
+– Φi potential directly after operation oi
+– Φ0 potential directly before o1
+24
+Amortized Analysis via Potential Method
+• Then the sum of the amortized costs is:
+N N
+N
+Σai = Σ ( ti + Φi – Φi-1) = ΦN – Φ0 + Σ ti
+i = 1 i = 1 i = 1
+• We want: sum of the real costs ≦ sum of the amorvzed costs
+• we choose a potenval funcvon, which is
+– non-negavve and
+– in the beginning equal to 0.
+• then: ΦN – Φ0 ≥ 0 and hence Σti ≤ Σai
+➡ total amorvzed costs provide a bound for the total real costs
+25
+Potential Method for Stack
+Potential function: number of elements in the stack; in the
+beginning: Φ0 = 0; before the operation s elements are in S
+Amortized costs for PUSH(S,x)
+• difference of potential: Φi – Φi-1 = s+1-s = 1
+• amortized costs: ai = ti + Φi – Φi-1 = 1+1 = 2
+Amortized costs for MULTIPOP(S,k)
+• assumption: k‘ elements will be removed
+• difference of potential: Φi – Φi-1 = -k‘
+• amortized costs: ai = ti + Φi – Φi-1 = k‘
+-k‘ = 0
+➡ AmorXzed costs of all operavons are in O(1)
+26
+Overview Fibonacci-Heaps
+4.1 Introduction Fibonacci-Heaps and Fibonacci
+4.2 Abstract Data Type: Priority Queues
+4.3 Introduction to Amortized Analysis
+4.4 Structure and Operations of Fibonacci-Heaps
+4.5 Amortized Analysis of Fibonacci-Heaps
+4.6 Experimental Comparison
+27
+Fibonacci Heaps (Fredman & Tarjan 1987)
+Operation Bin. Heap Fibonacci Heap
+Insert O(log n) O(1)
+ExtractMin O(log n) O(log n)*
+DecreaseKey O(log n) O(1) *
+* Not really fair, since amortized analysis
+28
+4.4 Structure and Operations of
+Fibonacci-Heaps
+• Set of trees with heap property
+• Global Min-pointer
+• Trees are not necessarily binary
+• Each vertex is either marked or unmarked
+Min
+13
+22 4
+22
+12 25 18 18
+27 19 23
+Fibonacci-Heaps: Realization
+• All roots are connected via doubly-linked cyclic list: root list
+• Each vertex has a pointer to its parent and to (only) one of its
+children (parent, child)
+• All children are connected in a doubly-linked cyclic list.
+• Each vertex has an entry for key, mark, rank (number of
+children)
+Min
+13
+22 4
+22
+Picture does not show
+links of realization
+12 25 18 18
+27 19 23
+Combine(h1,h2)
+• Combine two F-heaps h1 and h2:
+§ combine both root lists into one
+§ Min pointer then points to the min of both Min
+pointers.
+• Running time: O(1)
+Min
+h1 h2 Min
+13 4
+Min
+13 4
+22 25 12
+22 25 12
+31
+Insert(v)
+• Insert(v) into F-Heap h:
+§ Build a F-Heap h‘ consisting of node v (mark=0,
+rank=0)
+§ Combine h and h‘ into a new F-Heap
+• Running time: O(1). But laziness takes its revenge on
+ExtractMin...
+Min
+h‘ h
+Min
+2 4
+Min
+2 4
+25 12
+25 12
+But laziness takes its revenge on ExtractMin...
+32
+Fibonacci Heaps: ExtractMin
+• It is trivial to find the Minimum (Min-Pointer)
+• Delete the associated node from the root list
+• Assign all the children from the Min to the root list
+• We need to traverse all nodes in the root list in order to find
+the new Minimum
+• Idea: If we have to do that, we can also clean up.
+• We make sure that no two roots have the same degree (rank)
+– For this we use an array B[0..n-1] with the interpretation
+B[i] = v rank(v) = i
+33
+Clean Up Procedure for ExtractMin
+For all roots v:
+(1) Set mark(v)=0 // all roots are unmarked
+(2) d = rank(v)
+(3) If B[d] empty, then set B[d] = v
+(4) Else {
+(5) Repeat // merge
+• make root with larger key to the child of the smaller
+• set B[d] = empty // empty again
+• d = d+1
+(6) (7) B[d] = smaller root. Until B[d] empty // found an empty position for d
+// rank(v) is now d
+(8) }
+34
+Min
+13
+22
+4
+22
+12 25 18 18
+27 19 23
+13
+12
+in B[1], 22 in B[0], 12 in B[0], not possible, B[0] to empty,
+in B[1],
+22
+22
+18
+not possible,
+12
+22 13
+in B[2], B[1] to empty,
+25
+27
+in B[1], 18 in B[0],
+19 23
+12
+22
+in B[2], not possible,
+22 13
+18
+in B[3], B[2] to empty
+22
+19 23
+Running Time for ExtractMin
+Min
+25
+18
+12
+27
+22 13
+18
+22
+19 23
+• Time: O(d + W1 + m) = O(d + W1),
+– where d = deg(deleted root)
+– and W1 = #roots before deletion
+– and m = number of merge operations (clean up)
+• since: at most 1 merge-call for each root
+• detailled amortized analysis: later
+36
+Fibonacci Heaps: DecreaseKey
+DecreaseKey(v, newKey):
+(1) Decrease the key of v to value newKey;
+(2) If Heap-property is violated, then {
+• Repeat: // move v and ist children to root list
+ØCut the link between v and its p=parent(v)
+ØInsert v into root list
+ØSet mark(v)=0
+ØDecrease rank(p)
+ØSet v=p
+• Until mark(p)==0 or p is part of the root list
+• If p is not in root list, then set mark(p)=1
+(3) }
+(4) Update Min-pointer
+// Marking prevents F-Heaps from becoming too thin
+37
+Fibonacci Heaps: DecreaseKey
+Decrease 57 to 24
+8
+68 17
+46 20 23
+26 59 32
+29 87 64 35 57 42
+76 51 80
+94
+38
+Fibonacci Heaps: DecreaseKey
+8
+Decrease 57 to 24
+Decrease 42 to 19
+68 17
+46 20 23
+26 59 32
+24
+29 87 64 35 42
+76
+51 80
+94
+Animation
+39
+Fibonacci Heaps: DecreaseKey
+24
+8
+32
+Decrease 42 to 19
+76
+68 17
+46 20 23
+26 59
+32
+29 87 64
+35
+19
+51 80
+94
+Animation
+40
+Fibonacci-Heaps: DecreaseKey
+24
+8
+19
+32
+76
+68 17
+51 80
+35
+46 20 23
+94
+26 59
+29 87 64
+Decrease 42 to 19
+Not finished yet:
+43
+Fibonacci-Heaps: DecreaseKey
+24
+8
+19
+32
+23
+23
+76
+17
+68 17
+51 80
+35
+26 59
+46 20
+94
+29 87 64
+Decrease 42 to 19
+44
+4.5 Analysis of Fibonacci Heaps
+Goal: show that node degrees in F-Heap are bounded by O(log n)
+Lemma F1: Let p be a node of degree d and let v1,...,vd be the
+children of p in their order in which they have been appended
+to p (by merge). Then we have:
+The i-th child of p has degree at least i-2.
+Proof: When the i-th child vi was appended to p, the nodes vi
+and p have had the same degree which was at least i-1.
+Since then, vi could have lost at most one child; so its degree is
+still at least i-2.
+p
+previously:
+p
+f
+a f
+vi
+a
+d
+d
+45
+4.5 Analysis of Fibonacci Heaps
+Goal: show that node degrees in F-Heap are bounded by O(log n)
+Lemma F1: Let p be a node of degree d and let v1,...,vd be the
+children of p in their order in which they have been appended
+to p (by merge). Then we have:
+The i-th child of p has degree at least i-2.
+Proof: When the i-th child vi was appended to p, the nodes vi
+and p have had the same degree which was at least i-1.
+Since then, vi could have lost at most one child; so its degree is
+still at least i-2.
+previously:
+p
+p
+f
+a f
+c vi
+a
+d
+c e
+d
+previously „lost“ nodes in green
+e
+46
+Fibonacci Heaps: Analysis
+Lemma F2: Each node p of degree k of a F-Heap is root of a
+subtree with at least Fk+2 nodes.
+Remark: Fk+2 is the (k+2)-nd Fibonacci number . Because of this,
+Fredman and Tarjan have called them Fibonacci Heaps.
+p
+a f
+c
+Example for k=3:
+subtree has at least F5 = 5 nodes
+d
+e
+47
+Proof of Lemma F2
+Let p be a node of degree k and let v1,...,vk the children of p in
+the order in which they have been appended to p.
+For k ≥ 0 let Sk be the minimum number of all the successors of
+node p (including p).
+We show: Sk ≥ Fk+2
+Because of Lemma F1 we know:
+• deg(v1) ≥ 0: contribuvon to Sk is S0 ≥ 1 ✔
+• deg(v2) ≥ 0: S0 ≥ 1 ✔
+• deg(v3) ≥ 1: S1 ≥ 2 ✔
+• deg(vk) ≥ k-2: contribuvon to Sk is Sk-2 ✔
+k−2
+⇒ Sk ≥ 1+ S0 + S0 + S1 + ... + Sk−2 ≥ 1+1+ ∑ for k ≥ 2
+Si
+i=0
+from p from v1
+We have shown:
+Proof of Lemma F2 ff
+k−2
+Sk ≥ 1+1+ Si
+∑
+i= 0
+Claim: From Def. of Fibonacci numbers with F0=0 we have
+€
+k
+Fk +2 =1+1+ Fi
+∑
+i= 2
+Proof of Claim: We show:
+€
+k
+Fk +2 =1+ Fi
+∑
+i= 0
+€
+49
+Leonardo of Pisa
+• Fibonacci = „Son of Bonacci“
+• ca. 1170 – 1240, Pisa
+• Mathematician
+• Liber Abaci 1202
+F(n+2)=F(n)+F(n+1)
+F(1) = 1
+F(2) = 1
+• Φ=(1+√5)/2 = 1,6180339887…. „golden ratio“
+• Φ=(1-√5)/2 = -0,6180339887… „golden ratio conjugate“
+• Φ-1=2/(1+√5)=-Φ=(√5-1)/2=0,6180339887…
+n
+F(n)
+F(n)/
+F(n-1)
+F(n-1)/
+F(n)
+1 2 3 4 5 6 7 8 9 10 11 12
+1 1 2 3 5 8 13 21 34 55 89 144
+1,0 2,0 1,5 1,667 1,60 1,625 1,615 1,619 1,618 1,618 1,618
+1,0 0,5 0,667 0,600 0,625 0,615 0,619 0,618 0,618 0,618 0,618
+We have shown:
+Proof of Lemma F2 ff
+k−2
+Sk ≥ 1+1+ Si
+∑
+i= 0
+Claim: From Def. of Fibonacci numbers with F0=0 we have
+€
+k
+Fk +2 =1+1+ Fi
+∑
+i= 2
+Proof of Claim: We show:
+k
+Fk +2 =1+ Fi
+∑
+i= 0
+€
+• k=0: F2 = 1+F0 = 1+0 = 1
+• k=1: F3 = 1+F0+F1 = 2
+• Induction hypothesis: for all k up to k+1 already shown
+€
+• We show it for k+2:
+Fk +2 = Fk + Fk +1 = Fk + (1+ k−1
+k
+∑ )=1+ Fi
+Fi
+∑
+i= 0
+i= 0
+51
+Proof of Lemma F2 fff
+We have shown:
+k−2
+Sk ≥ 1+1+ Si
+∑
+i= 0
+k
+Fk +2 =1+1+ Fi
+∑
+i= 2
+€
+Still to show: Sk ≥ Fk+2
+• k=0: S0=1 ≥ F2=1 ✔
+€
+• k=1: S1≥2 ≥ F3=2 ✔
+• k≥2: Induction hypothesis: Si≥Fi+2 is valid for i≤k-1:
+k−2
+k−2
+k
+Sk ≥ 2 + Si
+∑≥ 2 + Fi+2
+∑= 2 + Fi
+∑= Fk +2
+i= 0
+i= 0
+i= 2
+€
+✔
+Fibonacci Heaps: Analysis
+We have shown Lemma F2 and need to show F3:
+Lemma F2: Each node p of degree k of a F-Heap is root of a
+subtree with at least Fk+2 nodes.
+Lemma F3: For all integers k ≥ 0, we have Fk+2 ≥ Φk (Golden
+Ratio).
+Proof :
+• k=0: F2 ≥ Φ0=1 ✔
+• k=1: F3=2 ≥ Φ1 ✔
+• k≥2: Induction hypothesis: Fi+2 ≥ Φi is valid for i≤k-1
+• Fk+2 = Fk + Fk+1 ≥ Φk-2 + Φk-1 = Φk (1/Φ + 1/Φ2)= Φk ((Φ+1) / Φ2)) = Φk
+• since Φ2 =((1+√5)/2)2 = (1+5+2√5)/4= 1 + (2+2√5)/4 = 1+Φ
+53
+Fibonacci Heaps: Analysis
+Now we are ready for the main Lemma F4 and its Corollary:
+Lemma F4: Each node of a F-Heap with N nodes has a degree of
+at most k ≤ log ΦN, where Φ denotes the Golden Ravo.
+Proof: We have N ≥ Sk ≥ Fk+2 ≥ Φk ➪ k ≤ logΦN
+Corollary: Directly after ExtractMin the root list contains at
+most O(log N) roots.
+Proof: after ExtractMin no two roots have same degree
+54
+Leonardo of Pisa
+• Fibonacci = „Son of Bonacci“
+• ca. 1170 – 1240, Pisa
+• Mathemavcian
+• Liber Abaci 1202
+F(n+2)=F(n)+F(n+1)
+F(1) = 1
+F(2) = 1
+• Φ=(1+√5)/2 = 1,6180339887…. „golden ravo“
+• Φ=(1-√5)/2 = -0,6180339887… „golden ravo conjugate“
+• Φ-1=2/(1+√5)=-Φ=(√5-1)/2=0,6180339887…
+n
+F(n)
+F(n)/
+F(n-1)
+F(n-1)/
+F(n)
+1 2 3 4 5 6 7 8 9 10 11 12
+1 1 2 3 5 8 13 21 34 55 89 144
+1,0 2,0 1,5 1,667 1,60 1,625 1,615 1,619 1,618 1,618 1,618
+1,0 0,5 0,667 0,600 0,625 0,615 0,619 0,618 0,618 0,618 0,618
+Fibonacci Heaps: Analysis
+• Oops: n times Insert, 1 ExtractMin → Θ(n)
+– Worst case: even worse than binary heaps
+– But we will see: rarely so bad
+– Intuition: Insert builds up tension/potential, which
+makes ExtractMin slow, but afterwards the potential
+decreases. Future ExtractMin will have it easier...
+– Potential is increasing slowly (over n Insert-
+operations) → average costs over all operations are O(1).
+• We need amortized analysis
+– Watch out: Not useful for real time problems!
+56
+Fibonacci Heaps: Amortized Analysis
+We show:
+• amortized time of an ExtractMin operation is O(log n),
+• amortized time of a DecreaseKey operation is O(1),
+• (amortized) time of an Insert operation is O(1).
+We choose the PotenXal Method Φ
+• Need a potenval funcvon, which is
+Ø non-negavve,
+Ø in the beginning equal to 0,
+Ø and reflects the potenval/tension of our heap
+➡ total amorvzed costs provide a bound for the total real costs
+58
+Amortized Analysis: How to choose Φ
+– What can cause high costs later?
+– certainly the number of roots W
+– we will make a provisional choice first: Φ = αW
+– will be extended soon...
+– also the constant α will be determined soon …
+59
+Amortized Analysis: ExtractMin
+• Before ExtractMin: the F-Heap had W1 roots, deleted node
+had degree d
+• After ExtractMin (operation oi): F-Heap has W2 roots,
+for cleanup m merge operations needed
+• We have: W2 = W1 -1+ d – m and m ≤ W1+d (because with every
+merge a root disappears)
+• Real costs: ti = c‘‘ (W1+d+m) = c (W1+d), where c,c‘‘ const.
+• Amortized costs:
+ai = c(W1+d) + α(W2 – W1) = (c – α)W1 + cd + αW2
+• We choose α = c, thus ai = c(d + W2)
+• Since d = O(log n) and W2 = O(log n) (because of Lemma F4
+and Corollary), we get ai = O(log n)
+Amortized Analysis: DecreaseKey
+• AssumpXon: DecreaseKey (oper. oi): creates k new roots
+• Real costs: ti = c‘(k + 1), c‘ constant
+• Problem: This is expensive and increases the potenval...
+• SoluXon: Second source for Φ: A: number of marked nodes
+– easily become roots and cause work, therefore new potenXal
+funcXon: Φ = αW + βA
+• ΔΦ ≤ αk + β(-(k-1)+1)=αk + β(2 – k), because all new roots but
+possibly the last one were marked, at most one node gets newly
+marked
+• AmorXzed costs:
+ai ≤ c‘(k + 1) + αk + β(2 – k) = (c‘ + α – β)k + c‘+ 2β
+• Choose β = c‘+ α, then we get ai ≤ 3c‘ + 2α = O(1)
+Amortized Analysis: ExtractMin (new)
+• Before ExtractMin: the F-Heap had W1 roots, deleted node
+had degree d
+• After ExtractMin (operation oi): F-Heap has W2 roots,
+for cleanup m merge operations needed
+• We have: W2 = W1 + d – m and m ≤ W1+d (because with every
+merge a root disappears)
+• Real costs: ti = c‘‘ (W1+d+m) = c (W1+d), where c,c‘‘ const.
+because new term is ≤ 0
+• Amortized costs:
+ai = c(W1+d) + α(W2 – W1) +β ΔA ≤ (c – α)W1 + cd + αW2
+• We choose α = c, thus ai = c(d + W2)
+• Since d = O(log n) and W2 = O(log n) (because of Lemma F4
+and Corollary), we get ai = O(log n)
+AmorZzed Analysis: Insert
+• Amortized costs of Insert:
+– Increases the number of roots to 1
+– ai = ti + ΔΦ = ti + α = O(1+ α) = O(1)
+• Obviously, Φ = αW + βA is non-negative and in the
+beginning 0.
+Note: The amortized costs of all operations must be
+estimated using the same potential function.
+(if you like to analyze a sequence of operations in
+amortized time.)
+This concludes the proof.
+63
+Fibonacci Heaps (Fredman & Tarjan 1987)
+Operation Bin. Heap Fibonacci Heap
+Insert O(log n) O(1)
+ExtractMin O(log n) O(log n)*
+DecreaseKey O(log n) O(1)*
+* amorvzed analysis
+66
+Fibonacci Heaps: Amortized Analysis
+Theorem: A sequence of up to
+Ø n Insert operations,
+Ø n ExtractMin operations, and
+Ø m DecreaseKey operations
+in an initially empty Fibonacci heap can be realized in total
+time O(m + n log n).
+67
+Overview Fibonacci-Heaps
+4.1 Introduction Fibonacci-Heaps and Fibonacci
+4.2 Abstract Data Type: Priority Queues
+4.3 Introduction to Amortized Analysis
+4.4 Structure and Operations of Fibonacci-Heaps
+4.5 Amortized Analysis of Fibonacci-Heaps
+4.6 Experimental Comparison
+68
+4.6 Experimental Comparison
+• f_heap: Fibonacci Heaps
+• p_heap: pairing heaps
+similar to F-Heap, one tree, rebalancing by
+pairwise merge at ExtractMin, s. exercises
+• k_heap: k-ary heaps
+• bin_heap: binary heaps
+• list_pq: linear unsorted list
+• r_heap: radix heaps (AMOT90)* (also called redistributive)
+• m_heap: monotone Heaps*
+*: only monotone heaps (e.g., for Dijkstra) and restricted to
+bounded integers as key/priority
+69
+Theoretical Running Times of Dijkstra with PQs
+• Graph G with n vertices, m edges and costs <=W
+• Worst Case: n Insert, n ExtractMin, m DecreaseKey operations
+• Expected for randomly generated G with random weights:
+Ø only n Insert and O(min(m, n log(2m/n)) DecreaseKey ops
+PQ Worst Case Running Time Expected Running Time
+F_heap O(m + n log n) O(m + n log n)
+p_heap O(m + n log n + m loglog n) O(m + n log n) (?)
+k-heap O(m logk n + nk logk n) O(m + n (log(m/n) + k) logk n)
+bin_heap O(m log n + n log n) O(m + n log(m/n) log n)
+list_pq O(m + n2) O(m + n2)
+r_heap* O(m + n log W) O(m + n log W)
+m_heap* O(m + maxdist + W) O(m + maxdist + W)
+*: costs restricted to bounded integers
+71
+Experimental Comparison
+• Mehlhorn & Näher: LEDA book 2000
+• comparison within Dijkstra
+• number n of vertices: 2000 (S), 20.000 (M) und 200.000 (L)
+• m=500.000 edges
+• Four instances each for S, M und L:
+– Random graphs: edge weights from [0..W-1] for W=100
+and W=1000
+– Worst-case graphs: edge weights (w) so that the update-
+time is maximum (costs for subgraph c=0 and c=10.000,
+remaining edges are chosen so that the number of
+DecreaseKey operations is m-n+1)
+• k-ary heaps with k=max(2,m/n)
+72
+Running Times of S-Instances in sec
+9
+8
+7
+6
+5
+f_heap
+p_heap
+k_heap
+bin_heap
+list_pq
+r_heap
+m_heap
+n=2000
+4
+3
+2
+1
+0
+s,rand,100 s,rand,1000 s,worst,0 s,worst,10000
+73
+35
+30
+25
+20
+15
+10
+5
+0
+Running Times of M-Instances in sec
+f_heap
+p_heap
+k_heap
+bin_heap
+list_pq
+r_heap
+m_heap
+n=20.000
+m,rand,100 m,rand,1000 m,worst,0 m,worst,10.000
+74
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+Running Times of L-Instances in sec
+f_heap
+p_heap
+k_heap
+bin_heap
+r_heap
+m_heap
+n=200.000
+n=200.000
+l,rand,100 l,rand,1000 l,worst,0 l,worst,10.000
+75
+Conclusions from the Experimental Comparison
+• r_heaps and m_heaps are the fastest.
+• But they only work for integer costs and they are only
+allowed for monotone PQs, i.e., the key of each Insert or
+DecreaseKey operation is at least as large as the last
+ExtractMin Operation. This is true for Dijkstra but not for
+PRIM (for Minimum Spanning Tree).
+• The safest and fastest in practice are p_heaps or bin_heaps.
+• If the number of DecreaseKey operations is large, then
+p-heaps are preferable.
+END F-Heaps
+76

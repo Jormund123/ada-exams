@@ -1,0 +1,50 @@
+RHEINISCHE
+FRIEDRICH-WILHELMS-
+UNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercise Sheet 4
+Discussion:
+CW 47
+Exercise 4.1 Pairing heaps (8 Points)
+Another data structure, which realizes priority queues, are pairing heaps. They are described in the following
+article: Amr Elmasry: Pairing Heaps with Costless Meld, ESA 2010, Part II, LNCS 6347, pp. 183193,
+2010. You can nd this article over google scholar or on arXiv.
+a) Describe the specic structure of pairing heaps and elaborate the dierences to Fibonacci heaps. (2p)
+b) Describe the method consolidate. (In the arxiv version it is called clean-up.) (2p)
+c) Describe the way the methods insert, decrease-key and delete-min work and state their running times.
+(4p)
+Exercise 4.2 Betweenness algorithms for trees (6 Points)
+For an edge e ∈ E we can dene σst (e) to be the number of shortest paths from s to t that contain the
+edge e. Using this we dene the undirected edge betweenness to be:
+CB (e) = 1
+2
+s,t
+σst (e)
+σst
+.
+Let T be an undirected tree.
+a) Give an algorithm that computes the edge betweenness of all edges of T in linear time and show that
+it is correct. (3p)
+b) Give an algorithm that computes the (vertex) betweenness of all vertices of T in linear time and show
+that it is correct. (3p)
+Exercise 4.3 Isomorphic invariants (6 Points)
+A property P is called an isomorphic invariant (or graph invariant) if and only if given two isomorphic graphs
+G and H, both graphs have the property P whenever one of the graphs has it. For example, the number of
+vertices and the number of edges are isomorphic invariants.
+Prove or disprove that the following properties are isomorphic invariants:
+a) G has m simple circuits (cycles) of length k. (1.5p)
+b) G has an Euler circuit. (1.5p)
+c) G has a minimum vertex cover of size k. (1.5p)
+d) G has adjacency matrix A. (1.5p)
+Page 1 of 1

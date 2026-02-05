@@ -1,0 +1,1450 @@
+Chapter I: Shortest Paths
+I.1: Shortest Path Problems
+I.2: Centrality Indices
+I.3: Betweenness Centrality Algorithms
+Professor Dr. Petra Mutzel
+Abteilung fur Computational Analytics ¨
+Institut fur Informatik (Abt. 1) ¨
+Universit¨at Bonn
+WiSe 2025/26 VO 1/3/4 October 13/27, and November 3, 2025 1 / 66
+Outline
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+2 / 66
+Literature on (Betweenness) Centrality
+Ulrik Brandes: A faster algorithm for betweenness centrality, Journal
+of Mathematical Sociology 25, 2, pp.163–177, 2001 (section 3,
+original article, proofs are taken mostly from there)
+Ulrik Brandes: On variants of shortest-path betweenness centrality
+and their generic computation. Social Networks 30(2), pp. 136–145,
+2008 (section 3, later article)
+Simone Teufel, Ann Copestake: Machine Learning and Real-world
+Data, Lecture Notes, course pages 2016-17, University of Cambridge,
+https://www.cl.cam.ac.uk/teaching/1617/MLRD/handbook/
+brandes.pdf (section 3, helpful)
+3 / 66
+Shortest Path Problems
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+4 / 66
+Shortest Path Problems Walks and Paths
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+5 / 66
+Shortest Path Problems Walks and Paths
+Walks and Paths
+s
+b
+c
+d
+e
+f
+t
+1
+2
+4
+1
+4
+4
+1
+2
+3
+1
+1
+Definition (Walk)
+Let G = (V, E) be a directed or undirected graph.
+A walk P of length k is a sequence (v0, e1, v1, . . . , ek , vk ) of
+alternating vertices and edges from G with ei = (vi−1, vi) for
+i = 1, . . . , k. Also denoted as: P = (v0, v1, . . . , vk ).
+6 / 66
+Shortest Path Problems Walks and Paths
+Walks and Paths
+s
+b
+c
+d
+e
+f
+t
+1
+2
+4
+1
+4
+4
+1
+2
+3
+1
+1
+Definition (Path)
+Let G = (V, E) be a directed or undirected graph.
+A path is a walk in which all vertices are distinct.
+7 / 66
+Shortest Path Problems Single-Source Shortest Path
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+8 / 66
+Shortest Path Problems Single-Source Shortest Path
+Single-Source Shortest Path
+Definition (Single-Source Shortest Path (SSSP))
+Given: Directed graph G = (V, E) with edge weights c ∈ R and
+vertex s ∈ V.
+Find: Shortest (s, v)-path in G for all v ∈ V.
+s
+b
+c
+d
+e
+f
+t
+1
+2
+1
+1
+4
+4
+1
+2
+3
+1
+2
+Undirected graphs can easily be made bidirected
+9 / 66
+Shortest Path Problems Single-Source Shortest Path
+Single-Source Shortest Path
+Definition (Single-Source Shortest Path (SSSP))
+Given: Directed graph G = (V, E) with edge weights c ∈ R and
+vertex s ∈ V.
+Find: Shortest (s, v)-path in G for all v ∈ V.
+s
+0
+b
+1
+c
+2
+d
+2
+e
+3
+f
+4
+t
+5
+1
+2
+1
+1
+4
+4
+1
+2
+3
+1
+2
+In the case of unweighted graphs → Breadth-First-Search
+For arbitrary edge weights → NP-hard
+For non-negative edge weights → Dijkstra
+10 / 66
+Shortest Path Problems Single-Source Shortest Path
+Complexity observations for general costs
+Arbitrary edge weights
+The version of the shortest path problem with negative edge weights
+leads to NP-hardness.
+This can be seen easily by reduction from Hamiltonian Path (or
+longest path problems).
+Arbitrary edge weights but no negative cost cycles
+The algorithm by Bellman-Ford for the SSSP problem with general
+weights can either detect a negative cost cycle or in the case that no
+such cycle exists, compute a shortest path in time O(|V||E|).
+11 / 66
+Shortest Path Problems Single-Source Shortest Path
+Dijkstra’s Algorithm
+Let G = (V, E) be a graph with non-negative edge weights c ∈ R and
+vertex s ∈ V.
+Let M be a very large number and dist(v) the distance from s to v for all
+v ∈ V.
+Q is a priority queue with operations
+InsertQ(v, dist(v)): inserts v into Q with priority dist(v)
+ExtractMinQ(): outputs and then deletes the minimum from Q
+DecreasePrioQ(v, dist(v)): updates the decreased priority of v in
+Q to dist(v)
+12 / 66
+Shortest Path Problems Single-Source Shortest Path
+Dijkstra’s Algorithm
+1: function Dijkstra(s)
+2: Initialisation: Q = ∅; dist[s] = 0; InsertQ(s, 0)
+3: for all vertices v ∈ V, v ̸= s do dist(v) = M; InsertQ(v, M)
+4: while Q ̸= ∅ do
+5: v =ExtractMinQ() // distance of v is minimum
+6: for all edges (v,w) ∈ E do // edge scanning
+7: if dist(w) > dist(v) + c(v,w) then
+8: set dist(w) = dist(v) + c(v,w)
+9: DecreasePrioQ(w, dist(w))
+10: end if
+11: end for
+12: end while
+13: return dist(v) for all v ∈ V
+14: end function
+13 / 66
+Shortest Path Problems Single-Source Shortest Path
+Analysis of Dijkstra’s Algorithm
+Let n = |V| and m = |E|.
+The running time of Dijkstra is T(n, m) =
+n · T(InsertQ) + n · T(ExtractMinQ() + m · T(DecreasePrioQ())
+Binary Heap for Q: T(n, m) = O((n + m) log n)
+T(InsertQ) = O(log n)
+T(ExtractMinQ() = O(log n)
+T(DecreasePrioQ() = O(log n)
+Fibonacci Heap for Q: T(n, m) = O(m + n log n)
+T(InsertQ) = O(1)
+T(ExtractMinQ() = O(log n) amortized (see Section I.4)
+T(DecreasePrioQ() = O(1) amortized (see Section I.4)
+14 / 66
+Shortest Path Problems Other problem variants
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+15 / 66
+Shortest Path Problems Other problem variants
+Point-to-Point Shortest Path
+Definition (Point-to-Point Shortest Path (PPSP))
+Given: Directed graph G = (V, E) with non-negative edge weights c
+and two vertices s,t ∈ V.
+Find: Shortest path from s to t in G.
+s
+b
+c
+d
+e
+f
+t
+1
+2
+4
+1
+4
+4
+1
+2
+3
+1
+2
+Also called: Single-Source Single-Sink Shortest Path or s-t Shortest Path
+16 / 66
+Shortest Path Problems Other problem variants
+Point-to-Point Shortest Path
+Definition (Point-to-Point Shortest Path (PPSP))
+Given: Directed graph G = (V, E) with non-negative edge weights c
+and two vertices s,t ∈ V.
+Find: Shortest path from s to t in G.
+s
+0
+b
+1
+c
+2
+d
+2
+e
+3
+f
+3
+t
+5
+1
+2
+4
+1
+4
+4
+1
+2
+3
+1
+2
+→ Dijkstra’s algorithm in time O(|E| + |V| log |V|) but there exist
+practically faster versions (e.g., the A
+∗
+algorithm or bidirected search)
+17 / 66
+Shortest Path Problems Other problem variants
+Goal-Directed Search
+Idea of the A
+∗ algorithm
+searches the routes that lead to the A
+∗ final goal
+best-first-search greedy algorithm
+based on admissible heuristic function
+in practice: faster than Dijkstra
+→ Details: see section I.5 and in the tutorials
+18 / 66
+Shortest Path Problems Other problem variants
+All-Pairs Shortest Path
+Definition (All-Pairs Shortest Path (APSP))
+Given: Directed graph G = (V, E) with non-negative edge weights c.
+Find: Shortest paths between all pairs of vertices.
+a
+b
+c
+d
+e
+f
+t
+1
+2
+1
+1
+4
+4
+1
+2
+3
+1
+2
+→ Algorithm by Floyd and Warshall in time O(|V|
+3
+) or |V| calls of
+Dijkstra’s algorithm leading to total time O(|V||E| + |V|
+2
+log |V|).
+19 / 66
+Shortest Path Problems Other problem variants
+Distance Oracles
+Definition (Distance oracle)
+Given: graph G = (V, E), with non-negative edge weights c.
+Find:
+1 data structure or index that undergoes preprocessing, and a
+2 query algorithm
+distance oracles allow a preprocessing phase in which a data structure
+is computed so that the query is fast
+trade-off between space (storage needed for data structure) and query
+time
+20 / 66
+Centrality Indices
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+21 / 66
+Centrality Indices
+Motivation: Social Network Analysis
+Aim: ranking of the nodes of a graph (e.g., social network)
+identifying the most influential person(s) in a social network,
+key infrastructure nodes in the Internet
+super-spreaders of disease
+Images: http://wiki.cogneon.de und https://markhneedham.com
+22 / 66
+Centrality Indices
+Co-author Network (Information FUSION)
+ENTRALITY)
+EENNESS
+y dominant
+community
+Figure 8. An overview of various sub-communities within the main
+component of the FUSION network.
+Source: Johansson, Martenson, Svenson 2011, layout by Pajek
+23 / 66
+Centrality Indices
+Crime Detection Network
+SD.
+corde user
+ering
+bsecN on
+ with
+f San
+owed
+om a
+n she
+n her
+mising
+ically
+ aims
+ation
+tly of
+es the
+(a)
+(b)
+Figure2:(a)Interfacethatallowstheanalysttobeginanewinvestigation(b)Source: Didimo, Liotta, Palladino, Montecchiani 2011
+24 / 66
+Centrality Indices
+Centrality Indices
+Assumption: edge weights c(e) ≥ 0 for all e ∈ E
+Centrality Indices
+most of them originally developed in social network analysis
+now: many other applications
+many of the centrality measures count the number of paths/walks of
+some type containing a given vertex
+measures differ in how the paths/walks are defined and counted
+length of paths/walks often measured as number of edges used;
+sometimes also with edge weights
+if no edge weights, they are often normalized
+25 / 66
+Centrality Indices
+Closeness Centrality
+Definition (Closeness Centrality (Sabidussi 1966))
+Let G = (V, E) be a graph and d(v,w) be the distance between
+vertices v and w.
+The closeness centrality cC (v) of a vertex v is defined as the inverse
+of the sum of distances of v to all other vertices of the graph.
+Formally: cC (v) := P
+1
+w∈V \{v}
+d(v,w)
+Interpretation: vertices with small average distances to all other nodes are
+central in a network
+a
+b c
+e d
+f
+g h
+j i
+1 1
+1
+1
+1 1
+1
+1
+26 / 66
+Centrality Indices
+Calculation of Closeness Centrality
+cC (v) := P
+1
+w∈V \{v}
+d(v,w)
+Efficient calculation
+|V| times solving SSSP, and accumulating the closeness scores
+on-the-fly
+v
+b c
+e w
+1 1
+1
+1
+E.g., cC (v) = 0, and cC (w) = 1/7
+Problem: If v has no path to w, then d(v,w) = ∞ dominates the sum
+27 / 66
+Centrality Indices
+Harmonic Closeness Centrality
+Definition (Harmonic Closeness Centrality)
+Let G = (V, E) be a graph and d(v,w) be the distance between
+vertices v and w.
+The harmonic closeness centrality cH(v) of a node v is defined as
+cH(v) := P
+w̸=v∈V
+1
+d(v,w)
+Since 1
+d(v,w) = 0 in the case that there is no path from v to w, this term
+does not dominate the sum anymore.
+v
+b c
+e w
+1 1
+1
+1
+E.g., cH(v) = 3, and cH(w) = 2.5
+28 / 66
+Centrality Indices
+Betweenness Centrality
+Definition (Betweenness Centrality (Freeman 1977, Anthonisse
+1971))
+Let G = (V, E) be a graph, σst the number of shortest paths between
+s and t, and σst(v) for s,t, v ∈ V the number of shortest paths
+between s and t that contain v.
+The betweenness centrality cB (v) of a node v is defined as
+cB (v) := P
+s,t∈V
+σst (v)
+σst
+Interpretation: people are important if they participate in many shortest
+paths, since deletion from the network (e.g., sickness) will impede the
+information flow significantly
+v
+b c
+e w
+1 1
+1
+1
+E.g., cB (v) = 3, and cB (w) = 0
+29 / 66
+Centrality Indices
+Motivation: Betweenness Centrality
+Color code: blue colors: higher value; red color: smaller value
+Social networks:
+people with high centrality value have a lot of control of information
+flow in the network
+their drop out of a company/organization may lead to deteriorated
+information flows
+high centrality index could mean that someone holds authority of
+different clusters of a network
+Sources: https://en.wikipedia.org/wiki/Betweenness centrality, http://www.fmsasg.com/socialnetworkanalysis/
+30 / 66
+Centrality Indices
+Motivation: Betweenness Centrality
+Co-author networks:
+indicates the interdisciplinarity of Scientific Journals
+the picture shows that different disciplines build co-author clusters
+Source: https://www.leydesdorff.net/betweenness/betweenness.pdf
+31 / 66
+Centrality Indices
+Motivation: Betweenness Centrality
+Metabolism networks:
+nodes with high centrality are bottlenecks and/or bridges of
+information flow
+points where large parts of the graph (modules) are connected
+nodes with locally large influence ← targets for drug design
+Source: https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-019-2897-z 32 / 66
+Centrality Indices
+Betweenness Centrality
+Betweenness centrality cB (v) = P
+s,t∈V
+σst (v)
+σst
+Definitions
+the length of a shortest (u,v)-path is denoted as distance d(u, v)
+σst for vertices s,t ∈ V is the number of shortest paths from s to t
+σst(v) for vertices s,t, v ∈ V is the number of shortest paths from s
+to t that contain v
+Assumptions and Conventions
+d(v, v) = 0 for all v ∈ V
+We set σss = 1 for all s ∈ V
+If v ∈ {s,t}, let σst(v) = 0
+0
+0 = 0 by convention
+In undirected graphs, the (s,t)-paths for s ̸= t are counted pairwise.
+Efficient calculation: Algorithm by Brandes (see Section 3) 33 / 66
+Centrality Indices
+Example with centrality indices
+Closeness Centrality Harmonic Centrality Betweenness Centrality
+Interpretation of colors:
+red / orange: high centrality values
+blue / black: low centrality values
+https://en.wikipedia.org/wiki/Centrality
+34 / 66
+Centrality Indices
+Centrality variants with some small examples
+a
+b c
+e d
+f
+g h
+j i
+k
+l m
+o n
+1 1
+1
+1
+1 1
+1
+1
+1 1
+1
+1
+Centrality a b e f g j k l o
+Closeness 0 0 0 1/4 0 0 1/4 1/7 1/7
+Harmonic 2 2 0 4 0 0 4 5/2 5/2
+Betweenness 4 0 0 0 0 0 6 0 0
+cC (v) = P
+1
+w∈V \{v}
+d(v,w)
+, cH(v) = P
+w̸=v
+1
+d(v,w)
+, cB (v) = P
+s,t
+σst (v)
+σst
+Note: For undirected graphs, cB (v) counts the number of undirected
+pairwise paths, only.
+35 / 66
+Betweenness Centrality Algorithms
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+36 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+37 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Betweenness Centrality
+In this subsection we consider a directed simple graph G = (V, E)
+(without self-loops and multiple edges) with strictly positive edge weights
+c(e) > 0 for all e ∈ E. Recall: cB (v) = P
+s∈V
+P
+t∈V
+σst (v)
+σst
+
+Definitions
+the length of a shortest (u,v)-path is denoted as distance d(u, v)
+σst for vertices s,t ∈ V is the number of shortest paths from s to t
+σst(v) for vertices s,t, v ∈ V is the number of shortest paths from s
+to t that contain v
+Assumptions and Conventions
+We set σss = 1 for all s ∈ V and d(v, v) = 0 for all v ∈ V
+If v ∈ {s,t}, let σst(v) = 0
+0
+0 = 0 by convention
+In undirected graphs, the (s,t)-paths for s ̸= t are counted pairwise.
+38 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Betweenness Centrality
+Observation 1 (Bellman criterion)
+v ∈ V is contained in a shortest path between two vertices s,t ∈ V ⇔
+d(s,t) = d(s, v) + d(v,t).
+Observation 2
+σst(v) = (
+0, if d(s,t) < d(s, v) + d(v,t)
+σsv · σvt, otherwise
+s v
+b c
+e d
+t
+1
+1
+2
+1 1
+1
+1
+1
+1
+→ It suffices to know the values of σsv and σvt for all v ∈ V
+39 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Shortest Path Tree
+Definition
+A subgraph T of G is called shortest path tree for G with source s, if
+T is a directed tree with source s
+V(T) is the set of all vertices reachable from s, and
+for each edge (u, v) in T we have: dist(v) = dist(u) + c(u, v), where
+dist(v) := d(s, v) (distance from s to v)
+s
+0
+b
+1
+c
+2
+d
+3
+e
+4
+f
+5
+t
+6
+1
+2
+1
+2
+1
+4
+1
+2
+4
+1
+2
+→ shortest path tree stores one shortest (s, v) path for each v ∈ V 40 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Shortest Path Subgraph
+Definition
+An edge is called SP-edge, if it is part of a shortest path from s to v
+for some v ∈ V.
+It follows that edge (u, v) is SP-edge ⇔ dist(v) = dist(u) + c(u, v)
+The shortest path subgraph SP(G) is the subgraph of G induced by
+the set of all SP-edges
+s
+0
+b
+1
+c
+2
+d
+3
+e
+4
+f
+5
+t
+6
+1
+2
+1
+2
+1
+4
+1
+2
+4
+1
+2
+1
+1
+41 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Shortest Path Subgraph: Observations
+Observation 3
+Every shortest path in G is contained in SP(G) and vice versa:
+Every path in SP(G) is a shortest path in G.
+Since all edge weights are strictly positive, SP(G) is a directed acyclic
+graph (DAG).
+s
+0
+b
+1
+c
+2
+d
+3
+e
+4
+f
+5
+t
+6
+1
+2
+1
+2
+1
+4
+1
+2
+4
+1
+2
+1
+1
+⇒ SP(G) stores the set of all shortest paths efficiently, and it is useful for
+calculating the σsv values
+42 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Counting the number of shortest paths starting in s
+Shown in green color: σsv
+s
+b
+c
+d
+e
+f
+t
+1
+2
+1
+2
+1
+4
+1
+2
+4
+1
+2
+1
+1
+s
+1
+b
+1
+c
+2
+d
+3
+e
+3
+f
+3
+t
+6
+We introduce preds
+(v), a list of all immediate predecessors of v in SP(G).
+Observation
+σsv =
+X
+u∈preds
+(v)
+σsu
+43 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Counting the number of shortest paths starting in s
+Shown in green color: σsv
+s
+b
+c
+d
+e
+f
+t
+1
+2
+1
+2
+1
+4
+1
+2
+4
+1
+2
+1
+1
+s
+1
+b
+1
+c
+2
+d
+3
+e
+3
+f
+3
+t
+6
+We introduce preds
+(v), a list of all immediate predecessors of v in SP(G).
+Initialize preds
+(v) = ∅, σsv = 0 for all v ∈ V \ {s}, and σss = 1.
+In Dijkstra directly after v ←ExtractMinQ():
+For all incoming edges (u, v) ∈ E: If dist(v) == dist(u) + c(u, v):
+Append u to preds
+(v)
+σsv = σsv + σsu
+44 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Dijkstra’s Algorithm with σ Calculation
+1: function Dijkstra(s)
+2: Initialisation: Q = ∅; dist[s] = 0; InsertQ(s, 0)
+3: for all vertices v ∈ V, v ̸= s do dist(v) = M; InsertQ(v, M)
+4: while Q ̸= ∅ do
+5: v =ExtractMinQ() // distance of v is minimum
+6: Add block from above for Updating pred and σ
+7: for all edges (v,w) ∈ E do // edge scanning
+8: if dist(w) > dist(v) + c(v,w) then
+9: set dist(w) = dist(v) + c(v,w)
+10: DecreasePrioQ(w, dist(w))
+11: end if
+12: end for
+13: end while
+14: return dist(v) for all v ∈ V
+15: end function
+45 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Idea of Basic Betweenness Algorithm
+Idea of Basic Betweenness Algorithm
+1 Compute the length and number of shortest paths between all pairs
+using the Dijkstra algorithm above (or BFS in unweighted case)
+2 For every vertex v: for all pairs of vertices s,t sum up the
+corresponding values cB (v) = P
+s,t∈V
+σst (v)
+σst
+. If v is on a shortest path
+from s to t, then σst (v)
+σst
+=
+P
+s,t∈V
+σsv ·σvt
+σst
+46 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Basic Betweenness Algorithm
+Basic Betweenness Algorithm
+1 For each v ∈ V: set cB (v) = 0 and σvv = 1
+2 For each s ∈ V:
+Solve a SSSP problem (Dijkstra) with source s
+→ d(s, v) for all v ∈ V
+→ σsv values in matrix A ∈ V × V: A(s, v) = σsv
+3 For each v ∈ V:
+For each vertex pair s ̸= t ∈ V × V with v ̸∈ {s,t}:
+If d(s,t) == d(s, v) + d(v,t)
+Then cB (v) = cB (v) + A(s,v)·A(v,t)
+A(s,t)
+4 Return cB (v) for all v ∈ V
+47 / 66
+Betweenness Centrality Algorithms Basic Betweenness Algorithm
+Analysis Basic Betweenness Algorithm
+Lemma 1
+The Basic Betweenness Algorithm correctly computes the betweenness
+values cB (v) for all v ∈ V. It runs in time O(|V|
+3
+) and needs storage of
+order O(|V|
+2
+).
+Proof:
+Correctness: due to observation 2
+Runtime: obvious
+Space: obvious
+48 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Overview
+1 Shortest Path Problems
+Walks and Paths
+Single-Source Shortest Path
+Other problem variants
+2 Centrality Indices
+3 Betweenness Centrality Algorithms
+Basic Betweenness Algorithm
+Algorithm by Brandes
+49 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Algorithm by Brandes
+Definition (pair-dependency and dependency)
+We define the pair-dependency δst(v) = σst (v)
+σst
+of a pair s,t ∈ V on a
+vertex v ∈ V, i.e., the proportion of all shortest paths between s and
+t that pass through v.
+The dependency of s (s ∈ V) on a vertex v ∈ V is defined as
+δs•(v) = X
+t∈V
+δst(v).
+Obviously, we have
+cB (v) = X
+s,t∈V
+δst(v) = X
+s∈V
+X
+t∈V
+δst(v)
+
+=
+X
+s∈V
+δs•(v)
+50 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Recursion for Dependencies
+Idea by Brandes: dependencies follow a recursion
+Recall that preds
+(w) = {v ∈ V | (v,w) ∈ E, d(s,w) = d(s, v) + c(v,w)}
+is the set of immediate predecessors of w on any shortest (s,w) path.
+Lemma 2
+If there is exactly one shortest path from s ∈ V to each t ∈ V, the
+dependency of s on any v ∈ V obeys
+δs•(v) = X
+w:v∈preds
+(w)
+(1 + δs•(w)).
+Theorem 1
+The dependency of s ∈ V on any v ∈ V obeys
+δs•(v) = X
+w:v∈preds
+(w)
+σsv
+σsw
+(1 + δs•(w)).
+51 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Lemma 2
+s
+0
+b
+1
+c
+2
+d
+3
+e
+4
+f
+5
+t
+6
+1
+2
+3
+2
+2
+4
+1
+2
+4
+1
+3
+We want to show: δs•(v) = X
+w:v∈preds
+(w)
+(1 + δs•(w))
+Here, we have: δs•(d) = P
+t∈V
+δst(d) = 1 + 1 + 1 = 3
+In the shortest path tree T with source s we are interested in the sum
+over all w for which v lies on the unique (s,t) path
+δst(v) = 1 iff v lies on the unique (s,t) path, and 0 otherwise
+We sum over all w for which v is on a (s,w)-path in T
+Here, for δs•(d) we get +1 for e and for f , and recursively sum up
+over all vertices for which they are predecessor in T, and so on
+52 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Lemma 2: General Picture
+If there is exactly one shortest path from s ∈ V to each t ∈ V →
+SP(G) is a shortest path tree
+δst(v) = 1 iff v lies on the shortest (s,t) path, and 0 otherwise
+we sum over all w for which v is predecessor in T
+δs•(v) = X
+t∈V
+δst(v) = X
+w:v∈preds
+(w)
+(1 + δs•(w))
+Source: Brandes 2001
+53 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Theorem 1: Intuition 1
+Shown in green color: σsv
+s
+b
+c
+d
+e
+f
+t
+1
+2
+2
+3
+1
+2
+4
+1
+1
+2
+1
+s
+1
+b
+1
+c
+2
+d
+3
+e
+4
+f
+3
+t
+7
+We want to show: δs•(v) = X
+w:v∈preds
+(w)
+σsv
+σsw
+(1 + δs•(w))
+Here, we have: δs•(d) = P
+t∈V
+δst(d) = 3/4 + 3/3 + (3/7+3/7)
+Again, we sum over all w from which v is on a (s,w)-path in T:
+For δs•(d) we get +3/4 for e and from that proportion only 4/7 reach
+t over e; moreover, we get +3/3 for f from which 3/7 reach t over f
+Hence: δs•(d) = (3/4 + 3/4(4/7)) + (3/3 + 3/3(3/7))
+Source: Brandes 2001
+54 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Theorem 1: Intuition 2
+Different graph: in green color: σsv
+s
+b
+c
+d
+e
+f
+t
+1
+2
+2
+3
+1
+2
+4
+1
+1
+2
+1
+s 1
+1
+b
+1
+c
+2
+d
+3
+e
+4
+f
+7
+t
+11
+δs•(v) = P
+t∈V
+δst(v)
+δse (d) = 3
+4
+δsf (d): some paths along edge (d, f ) contributing σsd
+σsf
+=
+3
+7
+, and other
+paths along (e, f ) contributing 3
+7
+(from the 4 paths over e only 3
+come from d:
+σsd
+σse
+·
+σsf (e)
+σsf
+=
+3
+4
+·
+4
+7
+)
+δst(d): (via recursion)
+55 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Theorem 1 ff
+Shown in green color: σsv
+s
+b
+c
+d
+e
+f
+t
+1
+2
+2
+3
+1
+2
+4
+1
+1
+2
+1
+s 1
+1
+b
+1
+c
+2
+d
+3
+e
+4
+f
+7
+t
+11
+δst(v) > 0 only for those t ∈ V \ {s} for which v lies on at least one
+shortest path from s to t
+some portions of the shortest paths to vertices beyond v will go
+through v, and others will not
+on any such path there is exactly one edge (v,w) with v ∈ preds
+(w)
+Definition (vertex-edge dependency)
+We define δst(v, e) = σst (v,e)
+σst
+, where σst(v, e) is the number of shortest
+paths from s to t that contain both vertex v and edge e.
+56 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Theorem 1 fff: Vertex-Edge Dependencies
+X
+t∈V
+δst(v) = X
+t∈V
+X
+w:v∈preds
+(w)
+δst(v,(v,w)) = X
+w:v∈preds
+(w)
+X
+t∈V
+δst(v,(v,w))
+Let w be any vertex with v ∈ preds
+(w). We are interested in
+δst(v,(v,w)):
+From the σst shortest paths from s to t, σsv many first go from s to
+v and then use edge (v,w).
+Case 1: If t = w, then δst(v,(v,w)) = σsv
+σsw
+Case 2: If t ̸= w, then from the fraction of σst (w)
+σst
+traversing w only
+the fraction of σsv
+σsw
+pass through v ⇒ δst(v,(v,w)) = σsv
+σsw
+·
+σst (w)
+σst
+57 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Proof of Theorem 1 ffff
+Plugging in this into the above leads:
+δs•(v) = X
+w:v∈preds
+(w)∈V
+X
+t∈V
+δst(v,(v,w)) =
+X
+w:v∈preds
+(w)∈V
+ σsv
+σsw
++
+X
+t∈V \{w}
+σsv
+σsw
+·
+σst(w)
+σst
+
+=
+X
+w:v∈preds
+(w)∈V
+σsv
+σsw
+˙
+(1 + δs•(w))
+Source: Brandes 2001
+58 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+How can we calculate it?
+We have shown: Theorem 1
+The dependency of s ∈ V on any v ∈ V obeys
+δs•(v) = X
+w:v∈preds
+(w)
+σsv
+σsw
+(1 + δs•(w)).
+s
+b
+c
+d
+e
+f
+t
+1
+2
+2
+3
+1
+2
+4
+1
+1
+2
+1
+s 1
+1
+b
+1
+c
+2
+d
+3
+e
+4
+f
+7
+t
+11
+Idea by Brandes: After a call of SSSP from s which delivers the σsu
+values for all u ∈ V, we start a reverse search using dependency recursion
+59 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Calculation of Pair-Dependencies
+Theorem 2
+The dependencies of s ∈ V on all other vertices v ∈ V in a directed
+graph G with positive edge weights can be computed in
+O(|V||E| + |V|
+2
+log |V|) time and O(|V| + |E|) space.
+For unweighted graphs, the running time reduces to O(|V||E|).
+Proof:
+Traverse the vertices in non-increasing order of their distance from s
+and accumulate dependencies by applying Theorem 1.
+for each vertex v: store the current dependency on v
+only linear storage is needed in O(|V| + |E|)
+60 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Betweenness Algorithm by Brandes
+Betweenness Algorithm by Brandes
+1 For each v ∈ V: set cB (v) = 0, and σvv = 1
+2 For each s ∈ V:
+1 Solve a SSSP problem (Dijkstra) with source s
+→ dist(v) = d(s, v) for all v ∈ V
+→ σsv values in list sigma(v) = σsv for each v
+→ SPs (G) in list pred(v) for each v
+→ stack S containing all vertices extracted by ExtractMin
+2 For v ∈ V do δ(v) = 0
+3 While stack S non-empty do
+pop S → w
+For v ∈ pred(w) do δ(v) = δ(v) + sigma(v)
+sigma(w)
+˙
+(1 + δ(w))
+If w ̸= s Then cB (w) = cB (w) + δ(w)
+3 Return cB (v) for all v ∈ V
+61 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Calculation on our example
+δs•(v) = X
+w:v∈preds
+(w)
+σsv
+σsw
+(1 + δs•(w)).
+s
+b
+c
+d
+e
+f
+t
+1
+2
+2
+3
+1
+2
+4
+1
+1
+2
+1
+s 1
+1
+b
+1
+c
+2
+d
+3
+e
+4
+f
+7
+t
+11
+w = t: v = f : δ(f ) = 7/11; v = e: δ(e) = 4/11 cB (t) = 0
+w = f : v = e: δ(e) = 4/11 + 4/7(1 + 7/11); v = d: δ(d) = 3/7(1 + 7/11)
+cB (f ) = 7/11
+w = e: v = d: · · · cB (e) = 4/11 + 4/7 · 18/11 = 100/77 for paths from s
+comparison shows: correct, since 4/7 paths to f and 8/11 paths to t
+62 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Betweenness Algorithm by Brandes
+Recall: Theorem 1
+The dependency of s ∈ V on any v ∈ V obeys
+δs•(v) = X
+w:v∈preds
+(w)
+σsv
+σsw
+(1 + δs•(w)).
+From Theorems 1 and 2 we directly get:
+Theorem 3
+The Betweenness Algorithm by Brandes (see above) correctly
+computes the betweenness centrality values for all vertices v ∈ V in a
+directed graph G = (V, E) with positive edge weights in
+O(|V||E| + |V|
+2
+log |V|) time and O(|V| + |E|) space.
+For unweighted graphs, the running time reduces to O(|V||E|).
+63 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Experiments: Betweenness Algorithm by Brandes
+Running times for the basic and the Brandes algorithm in seconds on
+random unweighted graphs with 100 to 2000 vertices and density ranges
+from 10% to 90%
+Source: Brandes 2001 64 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Experiments: Betweenness Algorithm by Brandes
+Running times for the basic and the Brandes algorithm in seconds on
+random unweighted graphs with up to 6000 vertices and constant average
+degree 20
+Source: Brandes 2001 65 / 66
+Betweenness Centrality Algorithms Algorithm by Brandes
+Experiments: Conclusions
+Further results and conclusions by Brandes
+running times of the naive standard algorithm vary only slightly with
+increasing density, since most of the time is taken for summing up
+on sparse graphs the running times of his algorithm are orders of
+magnitudes faster than with previous algorithm
+similar results for weighted graphs
+first betweenness computation for a 4,259 intravenous drug users with
+61,693 directed weighted links within 448 seconds with less than 8
+MBytes of memory (not possible previously)
+reports improvements from about 12 hours CPU time on SGI Medusa
+workstation to less than five minutes on a Pentium III PC (450 MHz)
+Source: Brandes 2001
+66 / 66

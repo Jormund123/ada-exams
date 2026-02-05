@@ -1,0 +1,58 @@
+RHEINISCHE
+FRIEDRICH-WILHELMSUNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Exercise Sheet 5
+Discussion:
+CW 48
+Exercise 5.1 – Equitable partitions (3 Points)
+Remember that a partition C = {C1, . . . ,Cℓ} of G is equitable if for every pair of vertices u,v ∈ V belonging
+to the same cell Ci of the partition, and for every cell R ∈ {C1, . . . ,Cℓ}, it holds |N(u) ∩ R| = |N(v ) ∩ R|.
+Show that a partition C = {C1, . . . ,Cℓ} is equitable if and only if for i,j ∈ [ℓ] it holds that
+(i) the induced subgraph of each Ci
+is regular, and
+(ii) the induced bipartite graph in between Ci and Cj
+is biregular, i.e., the vertices in Ci all have the same
+degree di
+, and the vertices in Cj all have the same degree dj
+. (3p)
+Exercise 5.2 – Weisfeiler-Leman: Example (5 Points)
+Apply the Weisfeiler-Leman algorithm on the following graph. For every iteration and every vertex, give
+the color histogram of its neighbors from the previous iteration. Further, give the queue from the Grohe
+algorihm (slide 21).
+1
+3 2
+4
+5 6
+7
+9 8
+10
+11 12
+Exercise 5.3 – Weisfeiler-Leman on paths (2 Points)
+We now discuss the number of refinement (see slide 21) iterations of the Weisfeiler-Leman algorithm on
+paths. Let P = (V,E) be a path with |V | = n vertices. How many iterations does the WL algorithm need
+to compute the stable partition of the vertices? Prove your answers.
+Exercise 5.4 – Weisfeiler-Leman and isomorphisms (3 Points)
+Let G and H be two isomorphic graphs. Prove that the Weisfeiler-Leman algorithm generates the same
+color groups for G and H.
+Page 1 of 2
+Exercise 5.5 – An algorithm for stress centrality (7 Points)
+The stress centrality of a node v is given by
+CS(v ) = X
+s̸=v̸=t∈V
+σst (v ).
+a) Construct an algorithm that calculates the stress centrality for every node in an unweighted undirected
+graph in O (nm) time and O (n + m) space and also argue that it is correct. (5p)
+Hint: Adapt Brandes algorithm
+b) Explain how to adapt the algorithm so that it runs on trees in O (n) time and space. (2p)
+Page 2 of 2

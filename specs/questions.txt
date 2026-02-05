@@ -1,0 +1,177 @@
+Algorithms for Data Analysis
+exam protocol
+WS 24/25 – First Attempt
+The exam was about 30 minutes long. The topics were selected by Prof.
+Mutzel by the roll of a dice.
+Part 1 – shortest path speedup techniques
+• Which speedup techniques for shortest path search do you know? (My an-
+swer was a list of techniques with their name and a one-sentence-description,
+occasionally interrupted with more in-depth questions)
+• What properties should a heuristic for A∗ have?
+• Describe the heuristic used in ALT. (The precise formula from the lecture
+was not asked for and I wouldn’t have known it)
+• Demonstrate the contraction of a vertex for the contraction hierarchies
+method.
+• What is the witness search step?
+• (I mentioned that sometimes the witness search is cut short for efficiency)
+Under which circumstances is that sensible?
+Part 2 – Weisfeiler-Lehman algorithm
+• What does the Weisfeiler-Lehman algorithm do? (Finds the coarsest stable
+partition of color classes on a graph, used for isomorphism detection)
+• What do you mean it can detect isomorphisms between some graphs but
+not others?
+• What runtime does Weisfeiler-Lehman have?
+• Perform the faster Weisfeiler-Lehman on a graph. (I had to come up with
+a graph myself.)
+• What is k-dimensional Weisfeiler-Lehman?
+• What is it used for? (Mention that 3-dim WL and up can distinguish
+regular graphs and so on.)
+• Can k-dimensional WL distinguish any two graphs?
+• Perform k-dimensional WL on a graph.
+1
+
+We were allowed to choose one of three topics for the first half. Inside this topic,
+an area was chosen by a die. For the second half, the topic as well as the area
+were chosen by a die. The three topics were the following:
+A Shortest Paths and Big Data Algorithms 3: I.1: Shortest path problems,
+I.2: Centrality Indices, I.3: Betweenness Centrality Algorithms I.4: Fi-
+bonacci Heaps I.5: Speedup Techniques; IV.2: Data Streaming Algorithms
+(pages 28-end) (Lecs. 2-4,6/7,14)
+B Graph Similarity and Big Data Algorithms 1: II.1: Introduction II.2:
+Weisfeiler-Leman Approaches II.3 Distance-Based Approaches I; IV.1: Ex-
+ternal Memory Algorithms and Data Structures (Lecs. 5,6,11,12,13)
+C Integer Linear Programming and Big Data Algorithms 2: III.1: Linear
+Programming III.2: ILPs for Combinatorial Optimization Problems III.3:
+Solution Methods of ILPs III.4: Linear Ordering Problem; IV.2: Data
+Streaming Algorithms (pages 1-27) (Lecs. 8,9,10,13)
+I tried to recall both the questions (in bold) as well as my answers, so it is
+comprehensible why follow-up questions were asked.
+The exam went quite well, even though I struggled a bit in the second half.
+1 First Half
+Chosen Topic: A
+Area: Speedup Techniques for Shortest Path Problems
+How can we speed up shortest path? Normal SSSP is Dijkstra, speed up
+by A* which uses a Heuristic to direct the search into the estimated direction
+of the target. We can also use arc flags . . . [interrupted by examiner]
+How does A* work? Dijkstra searches vertices in increasing distance from
+the start, A* uses Heuristic to search in increasing estimated distance to goal.
+How does the Heuristic look like? It has to be feasible.
+1
+What does this mean? The Heuristic may never overestimate the true cost
+of a path, else this path would not be searched. It may underestimate the true
+cost, as the distance when relaxing a vertex is always calculated using the true
+cost.
+You mentioned arc flags earlier, how do they work? Divide the graph
+into k subsets, then precalculate which edges are needed to reach one of the
+subsets. When searching for a target, we only need to look at the edges with
+the flag for the set which contains the target. This reduces the vertices that
+need to be relaxed. When combined with bidirectional search, the example in
+the lecture showed that almost no edges except the shortest path were searched.
+How does bidirectional search work? We search for a shortest path in
+a forwards and backwards graph simultaneously. The backwards graph is the
+same graph with all edges inverted, but with the same weight. We have two
+queues, one for the forwards search and one for the backwards search, and always
+extract the edge with the smallest cost of both queue. We are done when both
+searches meet. But we can stop earlier than when the same vertex is relaxed
+from both searches, in fact, it suffices if the shortest distance found so far is less
+than the sum of the top key in both queues.
+What other speedup techniques do you know? We can also use Hub
+Labeling. For each vertex, we generate a set of forwards and backwards hubs to
+which we calculate the shortest distances. When searching for a shortest path
+between s and t, we look up the forwards hubs of s and the backwards hubs of
+t and take those that are in common. The shortest path s → m → t is the one
+with the shortest partial distances.
+These hubs are per vertex, not global? Yes, global vertices are used in
+ALT, for example.
+How does that work? We try to choose landmarks around the search space,
+such that a landmark always lays behind the path from start to target. For
+every vertex, we calcucate the distance to all landmarks. When searching a
+shortest path, we calculate d(l, t) − d(l, u) and d(u, l) − d(t, l) for all landmarks
+and take the difference that is maximal, which is the landmark that is most
+behind the path from start to target or vice versa. When this is maximal, the
+shortest path lies on the way from start (or target) to landmark.
+2
+2 Second Half
+New topic: C
+Area: Combinatorial Problems
+What are combinatorial problems? I struggle a bit
+What does the Theorem of Minkowski-Weyl say? I don’t know.
+It’s about linear problems, given as Ax = b, which . . . [I interrupt
+the examiner] Every polyhedron can be given by conv(V ) + cone(E). A
+polyhedron is the intersection of finitely many hyperplanes.
+Yes, that is the definition of polyhedra. What are combinatorial
+problems? We want to search for a combination that maximises or minimises
+our goal function.
+This goal function has a certain form, how does it look? I don’t know.
+Write down a binary integer programme. One binary programme is the
+linear ordering problem.
+What does it do? In LOP, we have a fully connected graph. We want to
+search for a set of edges that contains exacty half the edges such that every
+vertex is totally ordered compared to every other.
+Yes, write down the problem for a graph with three vertices. We
+need to have exactly one of the two edges between every two vertices, as every
+vertex needs to be ordered relative to each other. We have our variables xe. For
+all vertices, either the edge from s to t or the other edge needs to be included.
+I write down xe + xe′ = 1.
+We also need to make sure that no cycles are included, so of the three edges in
+this cycle (1, 2, 3) we can only include 2.
+I write down x1 + x2 + x3 ≤ 2.
+The cost function is missing, how does it look? Each edge has a cost.
+And how do you calculate the total cost? You sum over the cost of all
+chosen edges.
+I write down max P ce.
+Yes, and that is the form of the cost function, it is the sum of the
+partial costs, not some weird other form. How does the combinatorial
+problem for this look? I struggle a bit.
+3
+What is the base set E? All six edges, we want to choose from those edges.
+Yes, and how does the feasible set I look like? The edge combinations
+that fulfil the conditions, i. e. exactly three edges that do not form a circle.
+And the cost function? It’s the same as in the binary integer pro-
+gramme. Yes.
+End of exam.
+
+Preamble
+This protocol contains the questions of one oral exam for Algorithms for Data
+Analysis in the Winter Semester 2024/2025.
+If you take the exam it would be very cool if you also made an exam protocol.
+The lecture topics were divided into three segments:
+1. Shortest Paths and Centrality
+2. Graph Similarity and External Memory
+3. Integer Programming and Graph Streaming
+You could select one segment from which a random topic was rolled by dice. A
+second topic was rolled by dice out of all tpoics.
+1 Topic 1: Graph Streaming
+Question 1.1 What is the graph streaming model and what motivates it?
+Question 1.2 How can we compute spanning trees in the graph streaming model
+and what is its runtime?
+Question 1.3 The runtime analysis contains an additional factor log(n) compared
+to how we would analyse runtime for regular graph algorithms. Why is that so?
+Question 1.4 Which general techniques are there for graph streaming algorithms?
+1
+2 Topic 2: Centrality
+Question 2.1 Which centrality measures did we discuss in the lecture? What
+are their intuitions and shortcomings?
+Question 2.2 Which naive algorithms exist for the different centrality definitions?
+Question 2.3 How does the Algorithm by Brandes work (write down pseudocode)?
+Question 2.4 Proof that the algorithm by Brandes produces correct results.
+Question 2.5 Analyse the runtime of the algorithm by Brandes.
+
+Speed-up techniques:
+What speedup techniques discussed in the lecture? (bidirectional, A*, ALT, etc.)
+How does bidirectional search work?
+How does A* work?
+How does ALT work and how are landmarks chosen?
+How do contraction hierarchies work and draw small example?
+Weisfeiler leman:
+What is it used for?
+What is graph isomorphism?
+describe the algorithm?
+What is the runtime of the naive WL and where does it come from?
+What is the runtime of the efficient WL?
+Describe how it is different from the naive algorithm?
+Draw a small graph and apply the efficient algorithm on it?
+Describe the K-WL draw a small graph and apply it on it?
+How does it compare to normal WL?
+what happens if we use k = big number e.g. n\2?
+Describe local K-WL how is it different from K-WL? What are its advantages?

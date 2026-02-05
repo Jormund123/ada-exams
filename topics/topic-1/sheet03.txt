@@ -1,0 +1,90 @@
+RHEINISCHE
+FRIEDRICH-WILHELMSUNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Exercise Sheet 3
+Discussion:
+CW 46
+Exercise 3.1  Shortest paths in acyclic graphs (5 Points)
+Let G = (V,E) be an acyclic weighted directed graph and let s,t ∈ V . Give an algorithm that calculates a
+shortest (s,t)-path in linear time (O(n + m)) and show that it is correct.
+Hint: Pick a smart processing order
+Exercise 3.2  Edge centrality (5 Points)
+Let G = (V,E) be a directed connected weighted graph. For an edge e ∈ E we can dene σst (e) to be the
+number of shortest paths from s to t that contain the edge e . With this denition we can also dene the
+betweenness centrality and the stress centrality of an edge:
+CB(e) = X
+s ,t
+σst (e)
+σst
+CS(e) = X
+s ,t
+σst (e)
+a) Show that CS(v ) and CS(e) can be related by the following formula (2.5p) :
+CS(v ) = 1
+2
+
+
+X
+e∈d(v)
+CS(e) −
+X
+s∈V,s̸=v
+σsv −
+X
+t∈V,t̸=v
+σv t
+
+
+b) Show that CB(v ) and CB(e) can be related by the following formula (2.5p) :
+CB(v ) =
+
+
+X
+e∈d+(v)
+CB(e)
+
+ − (n − 1) =
+
+
+X
+e∈d−(v)
+CB(e)
+
+ − (n − 1)
+Note that d(v ) are all edges that are incident to v , d
++(v ) are all outgoing edges of v and d
+−(v ) are all
+incoming edges of v .
+Exercise 3.3  Brandes algorithm with edge betweenness (5 Points)
+Adapt Brandes algorithm in such a way, that it collects all of the edge betweenness values.
+Page 1 of 2
+Exercise 3.4  Betweenness, closeness and center of a tree (5 Points)
+Let n1,n2 ∈ N>0. We dene the following fan graph F (n1,n2) = (V,E) with
+V = {a,b,c, v1, . . . , vn1
+, w1, . . . , wn2 } ,
+E = {{a,b},{b,c}} ∪ {{a,vi} : 1 ≤ i ≤ n1} ∪ {{c,wi} : 1 ≤ i ≤ n2} .
+You can nd an illustration of F (3,2) below.
+a b c
+v3
+v1
+w2
+w1
+v2
+a) Calculate the closeness centrality of all nodes with respect to n1 and n2.
+b) Calculate the betweenness centrality of all nodes with respect to n1 and n2.
+c) State conditions for n1 and n2 which guarantee that either a,b or c has maximal closeness.
+d) State conditions for n1 and n2 which guarantee that either a,b or c has maximal betweenness.
+e) Which vertex is in the center C as dened on the previous exercise sheet? Conclude that a central
+vertex must not have maximal betweenness or maximal closeness.
+Page 2 of 2

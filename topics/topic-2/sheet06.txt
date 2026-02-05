@@ -1,0 +1,101 @@
+RHEINISCHE
+FRIEDRICH-WILHELMSUNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Exercise Sheet 6
+Discussion:
+CW 49
+Exercise 6.1 – k-dimensional Weisfeiler-Leman algorithm (5 Points)
+Apply
+a) the 2-dimensional Weisfeiler-Leman algorithm (2.5p), and
+b) the sparse 2-dimensional Weisfeiler-Leman algorithm (2.5p)
+on the following graph:
+A B
+D C
+E
+Exercise 6.2 – Individualization Refinement (4 Points)
+Individualization refinement is a technique used in practice to do an isomorphism test. Let G and H be two
+graphs with identical color groups C1, . . . ,Ck computed by the 1-dim Weisfeiler-Leman algorithm.
+We now ’individualize’ an arbitrary vertex v ∈ VG by assigning it a new color. Simultaneously, we also
+assign this color to a vertex w ∈ VH which belongs to the ’same’ color group as v . Then, we restart the
+Weisfeiler-Leman algorithm initialized with these colors.
+(This means, that if v and w belonged to the color group Ci before individualization, then the initial color
+groups for the restarted WL algorithm are C1, . . . ,Ci−1,Ci \ {v},Ci+1, . . . ,Ck ,{v} (resp. with w).)
+a) Show that we can distinguish the 2-regular graphs from the lecture (Figure 1) using one iteration of
+individualization refinement. Draw the final coloring and explain which vertices you individualized. (2p)
+b) Give an example of two non-isomorphic graphs for which one iteration of this technique may not suffice
+to distinguish them. Again, give the final coloring and explain which vertex you individualized. (2p)
+Figure 1
+Page 1 of 3
+Exercise 6.3 – Weisfeiler-Leman: Grouping color strings (11 Points)
+In this exercise, we want to take a closer look at one iteration of the ’naive’ Weisfeiler-Leman algorithm,
+and in particular work out how this can actually be done in O (m) time. Let G = (V,E) be a graph, and
+denote n = |V | , m = |E|.
+For every vertex, we are given the color histogram of its neighbors from the previous iteration. Let S =
+{S1, . . . ,Sn} be strings representing these color histograms, and let l1, . . . ,ln be the lengths of these strings.
+In order to assign new colors to the vertices, we want to now group them. This has to be done such
+that vertices associated with identical strings get grouped together and later assigned identical colors, and
+vertices with different strings get different colors.
+We assume that colors are represented by integers 0, . . . ,n − 1 and that the integer characters in an input
+string Si are sorted. For example, an input string may look like (1,1,3,6,11) or (0,2,4,6), but not (4,2,0,6).
+Consider the following algorithm based on an in-place BucketSort approach, which iteratively considers a
+set of strings and a fixed character index, and splits the strings into different groups if they differ in that
+character: (Note that we always start counting at 0.)
+Algorithm 1: Distinguish color strings
+1 Initialize a queue ToRefine with the tuple (S,0)
+2 Initialize an empty solution set ColorClasses
+3 Initialize an array Characters of size n + 1 with an empty list at each entry
+4 while ToRefine is not empty do
+5 Pop (S
+′
+,k) from ToRefine
+6 Refine((S
+′
+,k), ToRefine, Characters, ColorClasses)
+7 return ColorClasses
+Algorithm 2: Refine((S,k), ToRefine, Characters, ColorClasses)
+1 Initialize an empty list ActiveIndices
+2 if S contains a single string then
+3 Add S to ColorClasses
+4 return
+5 for every string Si
+in S do
+6 if Si has length k then
+7 Add Si to Characters[n]
+8 else
+9 Let ck be the k-th character of Si (assuming that strings start with the 0-th character)
+10 Add Si to Characters[ck ]
+11 Add ck to ActiveIndices
+12 if Characters[n] is non-empty then
+13 Add Characters[n] to ColorClasses
+14 for every i in ActiveIndices do
+15 Add (Characters[i], k + 1) to ToRefine
+16 Empty Characters[i]
+17 return
+a) Apply the algorithm to S = {(1,3,4),(1,3),(1,3),(2,3,4)}. State the content of ColorClasses and
+ToRefine after each iteration. (1p)
+b) Argue that li ≤ n for all i ∈ [n], and that L :=
+P
+i∈[n]
+li ∈ O (m) holds for our input strings. (1p)
+c) Prove the following invariant: No tuple (·,n + 1) is ever added to ToRefine, i.e., we always have k ≤ n
+for the input of Refine(). (1p)
+d) Prove that Algorithm 1 returns the correct color classes. (3p)
+e) Argue why the runtime and space needed for Algorithm 1 is bounded in O (m). (3p)
+Page 2 of 3
+f) We assumed in the beginning that the characters of our input strings are sorted. Given the color classes
+computed during an iteration of WL, how can we generate the color strings for the next iteration in
+O (m) time and space such that they are already sorted by color. (2p)
+Hint: It is irrelevant which color class is associated with which integer, but it has to be consistent
+within an iteration for all vertices.
+Page 3 of 3

@@ -1,0 +1,398 @@
+Chapter III: Integer Linear Programming
+III.1: Linear Programming
+Professor Dr. Petra Mutzel
+Abteilung fur Computational Analytics ¨
+Institut fur Informatik (Abt. 1) ¨
+Universit¨at Bonn
+WiSe 2025/26 VO 8 1 December 2025
+1 / 28
+
+Introduction Linear Optimization Problems
+Definitions: Linear Optimization Problems
+Let m, n be positive integer numbers, b ∈ R
+m, c ∈ R
+n
+and A a m × n
+matrix with elements aij ∈ R.
+Definition (Linear Program)
+A Linear Program (LP) is the problem to find a vector x ∈ R
+n
+, among all
+vectors satisfying the linear constraints Ax ≤ b, that maximizes (or
+minimizes, resp.) the linear objective function c
+T x.
+Abbreviated form:
+max c
+T
+x
+Ax ≤ b
+x ∈ R
+n
+7 / 28
+Introduction Linear Optimization Problems
+Example Oil Refinery
+2 crack processes for crude oil with the following yield and costs:
+crack process 1: 2S, 2M, 1L, costs 3 EUR
+crack process 2: 1S, 2M, 4L, costs 5 EUR
+Aims:
+produce at least 3S, 5M, 4L (Delivery conditions)
+produce as cheap as possible
+min c
+T
+x
+Ax ≥ b
+x ∈ R
+n
+8 / 28
+Introduction Linear Optimization Problems
+Linear Program for Oil Refinery Example
+min 3x1 + 5x2
+2x1 + x2 ≥ 3
+2x1 + 2x2 ≥ 5
+x1 + 4x2 ≥ 4
+x1 ≥ 0
+x2 ≥ 0
+9 / 28
+Introduction Linear Optimization Problems
+Example: Diet Problem
+Aim: Purchasing as cheaply as possible so that
+at least 2000 kcal, 55g proteins, 800 mg calcium
+Conditions of purchase:
+oatmeal in 28g packs, 110 kcal, 4 g proteins, 2 mg calcium, cost: 3 cent
+chicken in 100 g packs, 205 kcal, 32 g proteins, 12 mg calcium, cost: 24 cent
+eggs in double packs, 160 kcal, 13 g proteins, 54 mg calcium, cost 13 cent
+milk in packs with 237 ml, 160 kcal, 8g proteins, 285 mg calcium, cost 9 cent
+cherry pie in 179 g packs, 420 kcal, 4 g proteine, 22 mg calcium, cost 20 cent
+beans in 260g packs, 260 kcal, 14g proteins, 80 mg calcium, cost 19 cent
+10 / 28
+Introduction Linear Optimization Problems
+Linear Program for Diet Problem
+min 3x1 + 24x2 + 13x3 + 9x4 + 20x5 + 19x6
+110x1 + 205x2 + 160x3 + 160x4 + 420x5 + 260x6 ≥ 2000
+4x1 + 32x2 + 13x3 + 8x4 + 4x5 + 14x6 ≥ 55
+2x1 + 12x2 + 54x3 + 285x4 + 22x5 + 80x6 ≥ 800
+x1 ≥ 0
+x2 ≥ 0
+x3 ≥ 0
+x4 ≥ 0
+x5 ≥ 0
+x6 ≥ 0
+11 / 28
+Introduction Linear Optimization Problems
+Example: Diet Problem
+Additional Constraints:
+Oatmeal should not be eaten without milk:
+For every one package of oatmeal, half a package of milk is needed:
+Remember: x1 oatmeal, x4 milk
+Add new constraints: 2x4 ≥ x1
+12 / 28
+Introduction Linear Optimization Problems
+Definitions: Linear Optimization Problems
+Linear optimization problems appear in different formulations and can be
+transformed in each other:
+max or min c
+T x : Ax ≤ b
+min c
+T x : Ax ≤ b and x ≥ 0
+min c
+T x : Ax = b and x ≥ 0
+13 / 28
+Introduction Linear Optimization Problems
+LP in its most general form
+Given are matrices A ∈ R
+(p,r )
+, B ∈ R
+(p,s)
+, C ∈ R
+(q,r )
+, D ∈ R
+(q,s)
+and
+vectors a ∈ R
+r
+, b ∈ R
+s
+, c ∈ R
+p
+, d ∈ R
+q
+.
+LP in its most general form
+max a
+T
+x + b
+T
+y
+Ax + By = c
+Cx + Dy ≤ d
+x ≥ 0
+Every vector (x, y) that satisfies all the constraints is called feasible
+solution of the LP.
+14 / 28
+Introduction Geometric Interpretation
+Feasibility Region of an LP
+Definitions
+A variable assignment x = (xj) corresponds to a point in the n-dimensional
+space R
+n
+.
+Every constraint a
+T
+i
+x ≤ bi defines a half-space. The boundary of this
+half-space is the hyperplane a
+T
+i
+x = bi
+.
+The half-space consists of all the points on one side including the points on
+the hyperplane.
+The intersection of the half-spaces of all the constraints is called the region
+of feasibility and defines the set of feasible solutions.
+The intersection of a finite number of half-spaces is called a polyhedron P.
+Bounded polyedrons are called polytopes.
+The set of points formed by the polyhedron is convex, i.e., for all x, y ∈ P
+all the points on the connecting line between x and y are in P.
+Source of definitions: B. V¨ocking, Crashkurs Lineare Programmierung, VO Effiziente Algorithmen, TU Dortmund, SoSe 2003
+15 / 28
+Introduction Geometric Interpretation
+Geometric Interpretation for Example with n = 2
+Every constraint defines a half-space. E.g., the boundary of the first
+constraint is the linear equation 2x + y = 3. The corresponding half-space
+is the set of all points above the blue line (in the figure restricted to the
+positive orthant). The same is true for the red and the green constraint.
+The intersection of these 5 half-spaces forms the feasibility region.
+0 1 2 3 4 5
+0
+1
+2
+3
+x
+y
+y = 3 − 2x
+y = 2.5 − x
+y = 1 − x/4
+min 3x + 5y
+2x + y≥3
+2x + 2y≥5
+x + 4y≥4
+x ≥ 0
+y ≥ 0
+16 / 28
+Introduction Geometric Interpretation
+Geometric Interpretation for n = 3
+Each of the six contraints defines a half-space. The feasibility region is
+exactly the intersection of all these half-spaces and forms a polyhedron
+(here: even a polytope).
+y-axis x-axis
+z-axis
+(7, 0, 0)
+(7, 0, 1)
+(2, 5, 0)
+(0, 6, 8)
+(2, 5, 6)
+(0, 0, 8)
+(0, 6, 0)
+max 3x + 2y + 2z
+x + z ≤ 8
+x + y ≤ 7
+x + 2y ≤ 12
+x, y, z ≥ 0
+17 / 28
+Introduction Geometric Interpretation
+Objective Function of LPs
+Definitions
+The objective function z(x) = c
+T x provides a direction in R
+n
+. We can
+visualize this direction by a ray starting at the origin and passing through
+the point c.
+Let H be a hyperplane which is orthogonal to the ray of the objective
+function, i.e., there exists a value z ∈ R, so that H = {x ∈ R
+n
+| c
+T x = z}.
+All points on H have the same objective value z, which we call z(H).
+0 1 2 3 4 5
+0
+1
+2
+3
+x
+y
+y = 3 − 2x
+y = 2.5 − x
+y = 1 − x/4
+y = 5x/3
+y = 3 − 3x/5
+y = 2 − 3x/5
+y = 17/10 − 3x/5
+min 3x + 5y
+2x + y≥3
+2x + 2y≥5
+x + 4y≥4
+x ≥ 0
+y ≥ 0
+Source of definitions: B. V¨ocking, Crashkurs Lineare Programmierung, VO Effiziente Algorithmen, TU Dortmund, SoSe 2003
+18 / 28
+Introduction Properties of LPs
+Bounded vs. Unbounded LPs
+Definitions
+An LP whose objective value z(x) is bounded from above by the constraints
+in maximization problems (bounded from below for minimization problems),
+is called bounded LP.
+Otherwise it is called unbounded.
+0 1 2 3 4 5
+0
+1
+2
+3
+x
+y
+y = 3 − 2x
+y = 2.5 − x
+y = 1 − x/4
+y = 17/10 − 3x/5 min 3x + 5y
+2x + y≥3
+2x + 2y≥5
+x + 4y≥4
+x ≥ 0
+y ≥ 0
+Source of definitions: B. V¨ocking, Crashkurs Lineare Programmierung, VO Effiziente Algorithmen, TU Dortmund, SoSe 2003
+19 / 28
+Introduction Properties of LPs
+Vertex Solutions of an LP
+Definition
+Each set of n linearly independent hyperplanes intersect at a point.
+Intersections contained in the solution polyhedron P are called the vertices
+(or corner points) of P.
+Two vertices are adjacent if they have exactly n − 1 hyperplanes in common.
+Adjacent vertices are connected by an edge. The edge corresponds to the
+intersection of the n − 1 common hyperplanes of these vertices.
+0 1 2 3 4 5
+0
+1
+2
+3
+x
+y
+y = 3 − 2x
+y = 2.5 − x
+y = 1 − x/4
+y = 17/10 − 3x/5 min 3x + 5y
+2x + y≥3
+2x + 2y≥5
+x + 4y≥4
+x ≥ 0
+y ≥ 0
+Source of definitions: B. V¨ocking, Crashkurs Lineare Programmierung, VO Effiziente Algorithmen, TU Dortmund, SoSe 2003
+20 / 28
+Introduction Properties of LPs
+Optimal Solutions of an LP
+Given a bounded LP in the form max{c
+T x | Ax ≤ b, x ≥ 0} with objective
+function z and solution polyhedron P. Let H be a hyperplane orthogonal to
+z and intersecting P.
+We imagine H is shifted upwards (i.e. in the direction of the objective
+function). This causes z(H) to increase continuously.
+We shift H exactly so far that no point in P is above H any more. Let H
+∗ be
+the hyperplane obtained in this way. Then H
+∗ ∩ P contains the optimal
+solutions of the LP.
+Because of convexity, at least one of these points is a vertex of P.
+So exists always a vertex in P with optimal target value.
+Source of definitions: B. V¨ocking, Crashkurs Lineare Programmierung, VO Effiziente Algorithmen, TU Dortmund, SoSe 2003
+21 / 28
+Introduction Properties of LPs
+Search for Optimal Solutions of an LP
+Definition
+Let v be any vertex of the polyhedron P. Let Hv be the hyperplane
+orthogonal to z passing through v. Let e be one of the edges incident to v.
+If e runs above Hv , the target value improves when starting from v and
+running along e. Such an edge is called improving edge.
+If v has no improving edge, we cannot move Hv upward without leaving P
+(because of convexity). So Hv = H
+∗
+and therefore v is optimal.
+Here, the global optimum corresponds to a locally optimal vertex.
+Source of definitions: B. V¨ocking, Crashkurs Lineare Programmierung, VO Effiziente Algorithmen, TU Dortmund, SoSe 2003
+22 / 28
+Introduction Properties of LPs
+Altogether:
+Theorem
+For each bounded LP of the form max{c
+T x | Ax ≤ b, x ≥ 0} with
+feasibility region P there is at least one vertex of P with the optimal
+solution value (the optimal vertex).
+A vertex without improving incident edge is an optimal vertex.
+without proof
+23 / 28
+Introduction Properties of LPs
+Feasibility Region of an LP
+Cases for LP feasibility region
+For the feasibility region of a linear program max{c
+T x | Ax ≤ b, x ≥ 0}
+there are three cases:
+P = ∅: no feasible solution exists ⇒ LP is unsolvable
+P ̸= ∅ and max{c
+T x | x ∈ P} does not exist: LP is solvable but there
+does not exist an optimal solution
+P ̸= ∅ and max{c
+T x | x ∈ P} exists: LP is solvable and has a finite
+solution x
+∗ with c
+T x
+∗ = max{c
+T x | x ∈ P}.
+24 / 28
+Introduction The Simplex Algorithm
+The Simplex Algorithm: Visualisation
+The Simplex Algorithm traverses the vertices of the polyhedron until it
+reaches the optimal vertex.
+[Source: http://de.wikipedia.org/wiki/Lineare_Optimierung]
+25 / 28
+Introduction The Simplex Algorithm
+Simplex Algorithm
+Given: LP with polyhedron of feasible solutions P
+1 Calculate an arbitrary vertex (inital vertex) v of P.
+2 If there exists no improving edge incident to v ⇒ stop: v is optimal.
+3 Traverse an arbitrary improving edge e incident to v.
+4 If e is unbounded, i.e., it does not have another end point ⇒ stop:
+The LP is unbounded.
+5 Let u be the other end point of e. Let v = u. ⇒ goto (2)
+26 / 28
+Introduction The Simplex Algorithm
+Visualization of Simplex Algorithm for our Example
+The Simplex Algorithm traverses the vertices of the polyhedron until it
+reaches the optimal vertex.
+x1-axis x2-axis
+x3-axis
+(7, 0, 0)
+(7, 0, 1)
+(2, 5, 0)
+(0, 6, 8)
+(2, 5, 6)
+(0, 0, 8)
+(0, 6, 0)
+z=0
+z=21
+z=23
+z=28
+max 3x1 + 2x2 + 2x3
+x1 + x3 ≤ 8
+x1 + x2 ≤ 7
+x1 + 2x2 ≤ 12
+x1, x2, x3 ≥ 0
+27 / 28
+Introduction Integer Linear Programming Problems
+Integer Linear Programming Problems
+Definitions
+Linear optimization problems with integer contraints: Integer Linear
+Program (ILP,IP)
+Linear optimization problems with partially integer constraints:
+Mixed-Integer Linear Program (MILP,MIP)
+Linear optimization problems with 0/1-constraints: Binary Linear
+Program (BLP, BP, 0/1-IP)
+28 / 28

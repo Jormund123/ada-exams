@@ -1,0 +1,814 @@
+Approaches to Graph Similarity
+Graph Similarity
+Approaches
+Weisfeiler-Leman approaches →Section II.2
+Distance-based approaches →Section II.3
+graph edit distance
+Frobenius distance
+(Subgraph) isomorphism based approaches
+For Section II.3 we need Linear Programming and Integer Linear Programs
+Source: gedevo.mpi-inf.mpg.de (right)
+5 / 54
+Frobenius Distance
+Approaches to Graph Similarity
+1 Frobenius Distance
+2 Graph Edit Distance
+A∗Algorithm for GED
+Integer Linear Programs for GED
+3 Computational Results
+6 / 54
+Frobenius Distance
+Motivation: Permutation of Adjacency Matrices
+2
+1
+2
+3
+isomorphic graphs, different
+drawings,
+4
+3
+1
+  4
+ 
+0 1 1 0
+1 0 1 0
+1 1 0 1
+0 0 1 0
+   
+   
+0 1 1 0
+1 0 1 1
+1 1 0 0
+0 1 0 0
+   
+different numbering of
+vertices, different adjacency
+matrices
+Aim: Permute the vertex set of one of the graphs in order to minimize the
+number of edge mismatches (0 vs. 1)
+6 / 54
+Frobenius Distance
+Frobenius Distance
+0 1 1 0
+0 0 0 1
+0 1 1 0
+1 0 0 1
+0 0 1 1
+1 0 0 1
+1 1 1 0
+1 0 0 1
+Idea: Permute vertex set of G in order to minimize the number of
+edge mismatches w.r.t. H
+Given G and H with their adjacency matrices A and B
+Search a permutation of rows and columns of A minimizing the
+Frobenius norm of the matrix Aπ−B:
+∥Aπ−B∥= (aπ
+ij−bij )2
+NP-hard even if G and H are trees or if G is a path [Grohe et al. 2018]
+7 / 54
+Graph Edit Distance
+Approaches to Graph Similarity
+1 Frobenius Distance
+2 Graph Edit Distance
+A∗Algorithm for GED
+Integer Linear Programs for GED
+3 Computational Results
+8 / 54
+Graph Edit Distance
+Graph Edit Distance
+Idea
+Compute the minimum cost to transform G into H
+allowed operations, e.g.,
+vertex or edge insertion
+vertex or edge deletion
+vertex or edge substitution
+graph editing problem is NP-hard
+used in Cheminformatics and Bioinformatics
+8 / 54
+Graph Edit Distance
+Motivation for Graph Edit Distance
+Widely used, since
+it can precisely capture the structural differences between graphs
+it is very flexible due to arbitrary edit costs
+error-tolerant
+controllable sensitivity to changes
+can be applied to all types of graphs
+Source: gedevo.mpi-inf.mpg.de 9 / 54
+Graph Edit Distance
+Edit Path for Labelled Graphs
+Definition (Cost of an edit path)
+A labeled graph is denoted as G = (V ,E ,LV ,LE ), where LV and LE
+are label functions that assign labels to vertices and edges, resp.
+Given are two labeled graphs. An edit path is given by a sequence of
+primitive edit operations to transform G1 to G2, such as
+G1 = G 0
+1 →G 1
+1 →···→G k
+1 = G2.
+Primitive edit operations are
+deleting ui →ϵ or inserting an α-labeled node (ϵ→ui )
+deleting or inserting an α-labeled edge
+changing a node’s (ui →vj ) or an edge’s label from α to β
+Edit operations on vertices and edges come with associated
+non-negative edit costs cV and cE.
+The cost of an edit path is defined as the sum of the costs of its edit
+operations.
+10 / 54
+Graph Edit Distance
+Graph Edit Distance
+Definition (Graph Edit Distance (GED))
+The GED(G1,G2) of two labeled graphs G1 and G2 is defined as the
+minimum cost of an edit path from G1 to G2.
+GEDs are not unique in general.
+Algorithms for GED restrict their attention to those edit paths
+induced by a node map between G and H.
+11 / 54
+Graph Edit Distance
+Graph Edit Distance based on Node Maps
+Definition (Node Map)
+Let G = (V G
+,E G ) and H = (V H
+,E H ) be two graphs, and V G +ϵ
+denote V G extended by a dummy node ϵG , and V H+ϵ denote V H
+extended by a dummy node ϵH
+.
+A node map between graphs G and H is a relation π: V G +ϵ →V H+ϵ
+which is an injective function between V G and V H and has the
+property that it assigns every vertex in G to either one vertex in H or
+to ϵH and every node in H is either the image of a vertex in V G or
+the dummy node ϵG
+.
+12 / 54
+Graph Edit Distance
+Graph Edit Distance based on Node Maps
+Observation
+Every node map π induces a set of graph edit paths.
+These graph edit paths have the same costs for a given mapping π.
+Definition (Graph Edit Distance restricted by Node Maps)
+The GED-M(G1,G2) of two labeled graphs G1 and G2 is defined as
+the minimum cost of an edit path restricted to the set of all node
+maps from G1 to G2
+13 / 54
+Graph Edit Distance
+GED vs. GED-M
+Theorem [Justice, Hero 2006]
+If the edit costs for the vertices and the edges respect the triangle
+inequality, then GED(G1,G2)=GED-M(G1,G2).
+Theorem [Blumenthal, Gamper 2020]
+There is a preprocessing routine for transforming the edit costs that
+leaves GED(G1,G2) invariant and ensures that, after the
+preprocessing, it holds that GED(G1,G2)=GED-M(G1,G2).
+14 / 54
+Graph Edit Distance
+Approaches for computing an optimal GED
+Approaches for computing an optimal GED
+A∗algorithm for graph edit distance
+Integer Linear Programming for GEDs
+The above algorithms (as all GED algorithms) restrict their attention to
+those edit paths induced by a node map between G and H.
+In the following we assume that the edit costs of vertices and edges are
+non-negative and respect the triangle inequality.
+15 / 54
+Graph Edit Distance A∗Algorithm for GED
+Approaches to Graph Similarity
+1 Frobenius Distance
+2 Graph Edit Distance
+A∗Algorithm for GED
+Integer Linear Programs for GED
+3 Computational Results
+16 / 54
+Graph Edit Distance A∗Algorithm for GED
+A∗ Algorithm for Graph Edit Distance
+Idea of A∗
+compute all possible mappings between the vertices of the given two
+graphs by means of an ordered search tree
+vertices of G1 are processed in the order {u1,...,u|V1|}
+start with u1, and iteratively construct partial edit paths mapping ui
+to vertices vj ,j = 1,...,|V2|[source: Chen et al. 2019]
+16 / 54
+Graph Edit Distance A∗Algorithm for GED
+A∗ Algorithm for Graph Edit Distance
+Idea of best-first search paradigm A∗
+let p be a partial edit path from G1 to current vertex v
+let g (p) be the cost of p from G1 to current vertex v ,
+and h(p) be an estimated cost from v to G2 (a leaf node in tree)
+for further expansion choose the partial edit path p that minimizes
+g (p) + h(p)
+17 / 54
+Graph Edit Distance A∗Algorithm for GED
+A∗ Algorithm for Graph Edit Distance
+1: Initialisation: Q= ∅; // stores partial edit paths
+2: for all vertices v ∈V2: insert substitution (u1 →v ) to Q
+3: insert deletion (u1 →ϵ) to Q
+4: while Q ̸= ∅do
+5: pmin=ExtractMinQ(g (p) + h(p))
+6: if pmin is a complete edit path then
+7: return pmin
+8: else Let pmin= {u1 →vi1 ,···
+,uk →vik }
+9: if k <|V1|then
+10: for all v ∈V2 \{vi1 ,···
+,vik } do
+11: Insert pmin ∪{uk+1 →v }into Q
+12: end for
+13: Insert pmin ∪{uk+1 →ϵ}into Q
+14: else Insert pmin ∪ v ∈V2\{vi1 ,···
+,vik }{ϵ→v }into Q
+15: end if
+16: end if
+17: end while 18 / 54
+Graph Edit Distance A∗Algorithm for GED
+Estimated cost of edit paths
+For ease of notation we assume unit edit costs 1 for all edit operations
+Possible approaches for estimating h(p)
+label set-based lower bound
+compare the labels of the remaining vertices and edges
+sum up the difference (e.g. 5 vs. 3 α labels →2)
+star match-based lower bound
+build stars of the remaining vertices by adding the direct neighbors
+compare the stars using the Hungarian algorithm (weighted bipartite
+matching)
+19 / 54
+Graph Edit Distance A∗Algorithm for GED
+Discussion
+Analysis and Improvements
+the worst case running time is n!
+→only very small graph instances can be computed exactly
+reduce the search space
+identify redundant and invalid mappings
+prune the search space
+heuristic improvement: beam search (only follow a constant number of
+most promising partial edit paths)
+Details: see Chen et al. 2019
+20 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Approaches to Graph Similarity
+1 Frobenius Distance
+2 Graph Edit Distance
+A∗Algorithm for GED
+Integer Linear Programs for GED
+3 Computational Results
+21 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Integer Linear Programs for GED
+INSERTION: Introduction to Integer Linear Programming:
+Modelling and Solution Techniques (see Chapter III)
+21 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Integer Quadratic Program IQP-GED
+GED can naturally be written as an integer quadratic program (IQP).
+Introducing dummy nodes:
+Let V G +0 denote V G extended by the dummy node for vertex
+insertion.
+Let V H+0 denote V H extended by the dummy node for vertex
+deletion.
+A mapping from dummy node ϵ denotes an insertion to V H , and
+a mapping to ϵ corresponds to a deletion in V G
+.
+Binary variables:
+For all i ∈V G +0
+,k ∈V H+0 we introduce variables xi ,k = 1
+⇔node i is mapped to k
+22 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Integer Quadratic Program IQP-GED
+min
+i ∈V G +0 k∈V H+0
+cV (i ,k)xi ,k +
+i ,j∈V G +0 k,l∈V H+0
+cE (ij,kl)xi ,k xj,l
+k∈V H+0
+xi ,k = 1 ∀i ∈V G (1)
+xi ,k = 1 ∀k ∈V H (2)
+i ∈V G +0
+xi ,k ∈{0,1} ∀(i ,k) ∈V G +0 ×V H+0 (3)
+Observation
+If both graphs have n vertices, then the IQP-GED formulation contains
+(n + 1)2 binary variables and (n + 1)2 + 2n constraints.
+23 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Integer Quadratic Program IQP-GED
+Theorem 1
+Let G and H be graphs and (x∗) be an optimal solution to the IQP-GED.
+1 Then (x∗) corresponds to a mapping of each vertex in G to either a
+vertex in H or to a deletion (V H+0), and vice versa: A mapping to
+each vertex in H from either a vertex in G or from an insertion
+(V G +0) (whereby a mapping from ϵ denotes an insertion, and a
+mapping to ϵ corresponds to a deletion).
+2 Such a mapping induces a set of feasible edit paths from G to H.
+3 The costs of each edit path induced by the mapping (x∗) is equal to
+the objective value of the IQP-GED.
+4 Every edit path induces a mapping from V G +0 to V H+0, satisfies
+constraints (1) – (3) of IQP-GED, and the costs coincide.
+Notice: We do not require constraints (1) and (2) for the dummy vertices,
+since we introduced exactly one dummy vertex for G and one for H.
+24 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Proof of Theorem 1
+Proof:
+1 For each vertex in G and in H the variable assignment tells us if the
+vertex has been inserted, deleted or if there was a label change.
+2 Thus (x∗) defines a set of elementary edit operations (not an
+ordering, but the costs are independent of the ordering).
+3 The second part of the cost function corresponds to the costs of
+matching node i to node k and j to l. Only in this case, the term
+xi ,k xj,l = 1, otherwise it is 0.
+4 The costs of each edit path of the set correspond to the value of the
+objective function.
+5 (4): obvious (since the edit costs respect the triangle inequality, see
+Theorem [Blumenthal, Gamper 2020] and slides no. 13/14).
+25 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Linearization of Integer Quadratic Programs
+Quadratic programs with linear constraints can be transformed into linear
+programs. Example:
+min
+u∈V v ∈V
+zu zv +
+u∈V
+cu zu (4)
+u∈V
+zu = 1 ∀v ∈V (5)
+zv = 1 ∀u ∈V (6)
+v ∈V
+zu ∈{0,1} ∀(u,v ) ∈V ×V (7)
+Introduce new binary variables and constraints:
+For all u,v ∈V we introduce new variables yu,v = 1
+⇔zu = 1 and zv = 1
+We need additional constraints that guarantee the above rule during the
+optimization process. Here: yu,v ≥zu + zv−1.
+26 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Back to: Integer Quadratic Program IQP-GED
+GED can naturally be written as an integer quadratic program.
+Binary variables:
+For all i ∈V G +0
+,k ∈V H+0 we introduce variables xi ,k = 1
+⇔node i is mapped to k
+min
+i ∈V G +0 k∈V H+0
+cV (i ,k)xi ,k +
+i ,j∈V G +0 k,l∈V H+0
+cE (ij,kl)xi ,k xj,l
+k∈V H+0
+xi ,k = 1 ∀i ∈V G (8)
+xi ,k = 1 ∀k ∈V H (9)
+i ∈V G +0
+xi ,k ∈{0,1} ∀(i ,k) ∈V G +0 ×V H+0 (10)
+27 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Standard Linearization of IQP-GED: LIQP-GED
+Binary variables:
+For all i ∈V G +0
+,k ∈V H+0 we introduce variables xi ,k = 1
+⇔node i is mapped to k
+For all i ,j ∈V G +0
+,k,l ∈V H+0 we introduce variables yi ,k,j,l = 1
+⇔xi ,k = 1 and xj,l = 1
+min
+i ∈V G +0 k∈V H+0
+cV (i , k)xi ,k +
+i ,j∈V G +0 k,l∈V H+0
+cE (ij, kl)yi ,k,j,l
+k∈V H+0
+xi ,k = 1 ∀i ∈V G (11)
+xi ,k = 1 ∀k ∈V H (12)
+i ∈V G +0
+xi ,k + xj,l−yi ,k,j,l ≤1 ∀i , j ∈V G +0
+, ∀k, l ∈V H+0 xi ,k ∈{0, 1} ∀(i , k) ∈V G +0 ×V H+0 yi ,k,j,l ∈{0, 1} ∀i , j ∈V G +0
+, ∀k, l ∈V H+0 (13)
+(14)
+(15)
+28 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Standard Linearization of IQP-GED: LIQP-GED
+Theorem 2
+The formulation LIQP-GED is equivalent to IQP-GED, in particular, a
+feasible solution of LIQP-GED corresponds to a feasible solution IQP-GED,
+and vice versa. The value of an optimal solution is the same in both cases.
+Proof: ⇒:
+Let (x′
+,y ′) be a feasible solution to LIQP-GED. From this we take the
+first part and claim that x′is also a feasible solution of IQP-GED,
+since it satisfies constraints (8) to (10).
+Now let us consider an optimal solution (x∗
+,y ∗) of LIQP-GED.
+The first part of the objective functions is the same in both
+formulations, we will concentrate on the second part.
+29 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Standard Linearization of IQP-GED: LIQP-GED
+Proof: ⇒ff:
+In the case that y ∗
+i ,k,j,l = 0, then because of (13) we have that either
+x∗
+i ,k = 0 or x∗
+j,l = 0. But then this leads to a contribution of 0 in both
+objective functions, since x∗
+i ,k·x∗
+j,l = 0.
+We also get a contribution of 0 in both objective functions if the edit
+costs cE (ij,kl) are 0.
+In the case that y ∗
+i ,k,j,l = 1 and the edit costs cE (ij,kl) are positive,
+constraint (13) for this i ,j,k,l has forced y ∗
+i ,k,j,l to be 1, since the
+minimization process would like to set y ∗
+i ,k,j,l to 0.
+This means that both related x-variables x∗
+i ,k = x∗
+j,l = 1, which leads
+to a contribution of cE (ij,kl) to the objective function of both
+formulations.
+30 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Standard Linearization of IQP-GED: LIQP-GED
+Proof: ⇐:
+Let (x′) be a feasible solution to IQP-GED. From this we assign a
+vector (x′
+,y ′) with y ′
+i ,k,j,l = x′
+i ,k·x′
+j,l and claim that it is feasible for
+LIQP-GED. We have 0 ≤y ′
+i ,k,j,l ≤1 and constraint (13) is valid, since
+it could only be violated if both x′
+i ,k = x′
+j,l = 1 and y ′
+i ,k,j,l = 0.
+It suffices to consider the second part of the objective function.
+In the case that y ′
+i ,k,j,l = 0, the contribution to both objective
+functions is 0.
+Otherwise, y ′
+i ,k,j,l = 1, and we have x′
+i ,k = x′
+j,l = 1. Again, we get the
+same contribution of cE (ij,kl) in both objective functions.
+Observation
+If both graphs have n vertices, then the LIQP-GED formulation contains
+(n + 1)2 + (n + 1)4 binary variables and (n + 1)2 + 2(n + 1)4 + 2n
+constraints.
+31 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Mixed Integer Linear Program MIP-GED
+Binary variables x and continuous variables z:
+For all i ∈V G +0
+,k ∈V H+0 we introduce variables xi ,k = 1
+⇔node (or dummy node) i is mapped to k
+For all i ∈V G +0
+,k ∈V H+0 we introduce variables zi ,k that contain
+the edit cost that is induced by mapping i to k, given all other node
+assignments.
+The constants ui ,k are defined as
+ui ,k = cV (i ,k) +
+j∈V G +0 l∈V H+0
+cE (ij,kl)
+2
+Source: Lerouge et al. 2017
+32 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Mixed Integer Linear Program MIP-GED
+min
+i ∈V G +0 k∈V H+0
+zi ,k
+k∈V H+0
+xi ,k = 1 ∀i ∈V G (16)
+i ∈V G +0
+xi ,k = 1 ∀k ∈V H (17)
+j∈V G +0 l∈V H+0
+cE (ij,kl)
+xj,l (18)
+2
++cV (i ,k)−(1−xi ,k )ui ,k ≤zi ,k ∀(i ,k) ∈V G +0 ×V H+0 (19)
+xi ,k ∈{0,1} ∀(i ,k) ∈V G +0 ×V H+0 (20)
+zi ,k ≥0 ∀(i ,k) ∈V G +0 ×V H+0 (21)
+Source: Lerouge et al. 2017
+33 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Mixed Integer Linear Program MIP-GED
+Theorem 3
+Let G and H be graphs and (x∗
+,z∗) be an optimal solution to the
+MIP-GED. Then we have
+GED(G ,H) =
+i ∈V G +0 k∈V H+0
+z∗
+i ,k.
+2
+Proof: Case 1: x∗
+i ,k = 0 for i ∈V G +0 and k ∈V H+0
+Constraint (19) gives:
+zi ,k ≥
+j∈V G +0 l∈V H+0
+cE (ij,kl)
+xj,l + cV (i ,k)−ui ,k = 0
+Since the objective function minimizes the (sum of the) z-values, it
+will end up with zi ,k = 0. The contribution to the objective function is
+0 as in the formulation IQP-GED.
+34 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Proof of Theorem 3
+Case 2: x∗
+i ,k = 1 for i ∈V G +0 and k ∈V H+0
+Constraint (19) gives:
+zi ,k ≥
+j∈V G +0 l∈V H+0
+cE (ij,kl)
+xj,l + cV (i ,k)
+2
+For all xj,l = 0 the contribution to the sum is 0, which is true also for
+the objective function of IQP-GED.
+For all xj,l = 1 the contribution to the sum is cE (ij,kl)
+2.
+cE (ij,kl) is the edit cost for mapping a possible (existing or
+non-existing) edge (i ,j) to (k,l).
+Constraints (19) force half of it to zi ,k and half of it to zj,l.
+The sum of the contribution to the objective function for zi ,k and for
+zj,l is exactly the same as in the formulation IQP-GED.
+Observation
+If both graphs have n vertices, then the MIP-GED formulation contains
+2(n + 1)2 variables and 3(n + 1)2 + 2n constraints. 35 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program F1
+Binary variables for mapping nodes:
+For all i ∈V G
+, k ∈V H we introduce variables xi ,k = 1
+⇔node i is mapped to k
+For all i ∈V G we introduce a variable xi ,ϵ = 1 ⇔i is deleted
+For all k ∈V H we introduce a variable xϵ,k = 1 ⇔k is inserted
+Binary variables for mapping edges:
+For all edges (i ,j) ∈E G and (k,l) ∈E H we introduce variables
+wij,kl = 1 ⇔edge (i ,j) is mapped to edge (k,l)
+For all edges (i ,j) ∈E G we introduce a variable wij,ϵ = 1 ⇔edge
+(i ,j) is deleted
+For all edges (k,l) ∈E H we introduce a variable wϵ,kl = 1 ⇔edge
+(k,l) is inserted
+36 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program F1
+min
+i ∈V G k∈V H
+ci ,k xi ,k + i ∈V G ci ,ϵxi ,ϵ +
+cϵ,k xϵ,k (22)
++
+ij∈E G kl∈E H
+cij,kl wij,kl + ij∈E G cij,ϵwij,ϵ +
+cϵ,kl wϵ,kl (23)
+xi ,ϵ +
+k∈V H
+kl∈E H
+xi ,k = 1 ∀i ∈V G (24)
+k∈V H
+xϵ,k +
+xi ,k = 1 ∀k ∈V H (25)
+i ∈V G
+wij,ϵ +
+wij,kl = 1 ∀i ,j ∈E G (26)
+kl∈E H
+wϵ,kl +
+wij,kl = 1 ∀k,l ∈E H (27)
+ij∈E G
+wij,kl−xi ,k−xj,k ≤0 ∀i ,j ∈E G
+,k,l ∈E H (28)
+wij,kl−xi ,l−xj,l ≤0 ∀i ,j ∈E G
+,k,l ∈E H (29)
+xi ,k , xi ,ϵ, xϵ,k ∈{0,1} ∀(i ,k) ∈V G ×V H (30)
+wij,kl , wij,ϵ, wϵ,kl ∈{0,1} ∀(i ,j) ∈E G
+,∀(k,l) ∈E H (31) 37 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program F1
+The so-called topological constraints (28) and (29) link node and edge
+assignment variables. They ensure that an edge (i ,j) ∈E G can only be
+mapped to an edge (k,l) ∈E H if one of i or j is mapped to k, and the
+other to l.
+Theorem 4
+Let G and H be graphs and (x∗
+with value z∗. Then we have
+,w ∗) be an optimal solution to the BIP F1
+GED(G ,H) = z∗
+.
+Proof: see tutorials
+Observation
+If both graphs have n vertices and m edges, then the F1 formulation has
+n2 + 2n + m2 + 2m variables and n2 + 4n + m2 + 4m + 2m2 constraints.
+38 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program F2
+Lerouge et al. (2017) suggested to project some of the variables out, and
+to substitute constraints (28) and (29) in (F1) by stronger ones (see
+below):
+Binary variables:
+For all i ∈V G
+, k ∈V H we introduce variables xi ,k = 1
+⇔node i is mapped to k
+For all edges (i ,j) ∈E G and (k,l) ∈E H we introduce variables
+wij,kl = 1 ⇔edge (i ,j) is mapped to edge (k,l)
+Source: Lerouge et al. 2017
+39 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program F2
+min
+i ∈V G k∈V H
+(ci ,k−ci ,ϵ−cϵ,k )xi ,k +
+ij∈E G kl∈E H
+(cij,kl−cij,ϵ−cϵ,kl )wij,kl + C
+.
+k∈V H
+xi ,k ≤1 ∀i ∈V G (32)
+i ∈V G
+xi ,k ≤1 ∀k ∈V H (33)
+wij,kl−xi ,k−xj,k ≤0 ∀k ∈V H
+,∀(i ,j) ∈E G (34)
+l:(k,l)∈E H
+xi ,k ∈{0,1} ∀(i ,k) ∈V G ×V H (35)
+wij,kl ∈{0,1} ∀(i ,j) ∈E G
+,∀(k,l) ∈E H (36)
+with constant
+C=
+i ∈V G
+ci ,ϵ +
+k∈V H
+cϵ,k +
+ij∈E G
+cij,ϵ +
+kl∈E H
+cϵ,kl
+Source: Lerouge et al. 2017
+40 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program F2
+Theorem 4
+Let G and H be graphs and (x∗
+with value z∗. Then we have
+,w ∗) be an optimal solution to the BIP F2
+GED(G ,H) = z∗
+.
+Proof: see tutorials
+Observation
+If both graphs have n vertices and m edges, then the F2 formulation has
+n2 + m2 variables and n2 + m2 + nm + 2n constraints.
+41 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Problem in F2
+We do not have information if i is mapped to k or to l, and therefore we
+need constraints (34):
+yij,kl ≤xi ,k + xj,k ∀ij ∈EG , k ∈VH (34)
+l∈δH (k)
+Idea: If we would introduce artificial edge orientations, these constraints
+could be strengthened.
+A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025) 42 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Idea: Introduce Edge Orientations
+New binary variables:
+zij,kl = 1 for all arcs (i ,j) ∈E−→ G (i <j) and (k,l) ∈E←→ H
+⇔arc (i ,j) ∈E−→ G gets mapped to arc (k,l) ∈E←→ H
+Strengthened constraints:
+l∈δ+
+←→ H (k)
+A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025)
+zij,kl ≤xi ,k ∀(i ,j) ∈E−→ G , k ∈VH
+43 / 54
+Graph Edit Distance Integer Linear Programs for GED
+New ILP Formulation FORI
+(FORI) min
+i ∈VG k∈VH
+(ci ,k−ci ,ϵ−cϵ,k )xi ,k +
+(i ,j)∈E−→ G (k,l)∈E←→ H
+(cij,kl−cij,ϵ−cϵ,kl )zij,kl + K
+j∈δ+
+−→ G (i )
+s.t.
+k∈VH
+xi ,k ≤1 ∀i ∈VG (37)
+i ∈VG
+xi ,k ≤1 ∀k ∈VH (38)
+l∈δ+
+←→ H (k)
+zij,kl ≤xi ,k ∀k ∈VH , (i , j) ∈E−→ G (39)
+l∈δ−
+←→ H (k)
+zij,lk ≤xj,k ∀k ∈VH , (i , j) ∈E−→ G (40)
+zij,kl +
+zji,lk ≤xi ,k ∀i ∈VG , (k, l) ∈E←→ H (41)
+j∈δ−
+−→ G (i )
+x ∈{0, 1}|VG |·|VH |
+, z ∈{0, 1}|EG |·2|EH | (42)
+A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025)
+44 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Binary Integer Linear Program FORI
+Theorem 4
+Let G and H be graphs and (x∗
+,z∗) be an optimal solution to the BIP
+FORI with value OPT. Then we have
+GED(G ,H) = OPT.
+Proof: see tutorials
+Observation
+If both graphs have n vertices and m edges, then the FORI formulation
+has n2 + 2m2 variables and n2 + 2m2 + 3nm + 2n constraints.
+We will skip the proof of the correctness analysis; for interested readers,
+see A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025).
+45 / 54
+Graph Edit Distance Integer Linear Programs for GED
+Theoretical Comparison of Models
+Theorem (Hierarchy of ILP Formulations)
+FORI ≻F 2 ≻F 1
+Definition (Strength of ILP Formulations, Minimization Problems)
+Let ν(PM (I )) be the optimal value of the LP relaxation for
+formulation M on instance I.
+M is strictly stronger than M′(notation: M ≻M′), if
+ν(PM (I )) ≥ν(PM′(I )) for all instances I of the minimization problem,
+and
+there exists a problem instance I for which ν(PM (I )) >ν(PM′(I ))
+We will skip the proof of this; for interested readers, see A. D’Ascenzo, J.
+Meffert, P. Mutzel and F. Rossi (2025).
+46 / 54
+Computational Results
+Experimental Results by Blumenthal and Gamper
+2020
+Test Set Up
+Comparison of performance of A∗-based approaches
+A∗-GED (based on best-first search)
+DF-GED (basically A∗with depth-first search)
+CSI-GED (basically edge-based A∗)
+with ILP-based approaches
+BIP F2 (here denoted as BIP-GED)
+MIP-GED
+data sets PROTEIN, GREC, LETTERS from the IAM graph database
+timeouts: percentage of graph comparisons where the algorithm has
+not finished within 1000 seconds
+runtime: average runtime across pairwise comparisons
+Source: Blumenthal and Gamper 2020
+47 / 54
+Computational Results
+Experimental Results
+A∗-GED algorithm often failed and needed much more storage, therefore it
+is omitted from the plots
+Source: Blumenthal and Gamper 2020
+48 / 54
+Computational Results
+Experimental Results
+Source: Blumenthal and Gamper 2020
+49 / 54
+Computational Results
+Experimental Results
+Source: Blumenthal and Gamper 2020
+50 / 54
+Computational Results
+Experimental Results by D’Ascenzo et al. (2025)
+(FORI) solves ALL benchmark instances from the IAM graph database to
+provable optimality!
+Datasets taken from Blumenthal et al. 2020, e.g., in the bin MUTAG(41-50), there are
+45 pairs of molecular graphs with 41 to 50 nodes from Mutagenicity
+MUTAG 41-50 51-60 61-70 71-80 81-90 91-100
+timeouts in %
+(F2) 20.0 64.4 86.6 97.7 95.5 95.5
+(F2+) 0 6.6 11.1 17.7 20.0 22.2
+(FORI) 0 0 0 0 0 0
+avg. runtime in sec.
+(F2) 254.77 492.80 551.61 599.96 587.13 579.81
+(F2+) 18.82 76.92 163.01 259.99 254.63 262.17
+(FORI) 1.43 2.06 6.06 8.04 8.45 25.64
+A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025)
+51 / 54
+Computational Results
+Experimental Results by D’Ascenzo et al. (2025)
+Protein dataset
+Solved by F2 and FORI
+Solved by FORI only
+10x speed-up line
+102
+FORI time [s]
+101
+100
+10−1
+0 100 200 300 400 500 600
+F2 time [s]
+A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025) 52 / 54
+Computational Results
+Experimental Results by D’Ascenzo et al. (2025)
+AIDS dataset
+Solved by F2 and FORI
+Solved by FORI only
+10x speed-up line
+102
+FORI time [s]
+101
+100
+10−1
+0 100 200 300 400 500 600
+F2 time [s]
+A. D’Ascenzo, J. Meffert, P. Mutzel and F. Rossi (2025) 53 / 54
+Computational Results
+Conclusion
+The selection of the ILP-formulation is very important for the
+solvability of the GED problem!
+It is not true that a smaller number of variables of an ILP model leads
+to better solvability.
+ILP-formulations currently dominate the exact solution techniques for
+GED, they are better than A∗-based techniques.
+GED is still a vibrant field of research, in which much progress is still
+being made.
+54 / 54
