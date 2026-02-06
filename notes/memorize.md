@@ -329,3 +329,228 @@ On a path with n vertices: **⌈n/2⌉ iterations**
 - For large k, k-WL distinguishes ALL graphs (but exponential runtime)
 
 ---
+
+# Memorization Reference — Topic 3 (Integer Linear Programming)
+
+---
+
+## 19. Combinatorial Optimization Problem (COP)
+
+**Definition:**
+
+```
+E = ground set (finite)
+I = feasible sets ⊆ 2^E
+c: E → R (cost function)
+
+Goal: find I* ∈ I maximizing (or minimizing) Σ_{e∈I*} c(e)
+```
+
+**Key:** Cost is ALWAYS a sum of partial costs: $c(I) = \sum_{e \in I} c_e$
+
+---
+
+## 20. Minkowski-Weyl Theorem — CRITICAL
+
+$$P = \text{conv}(V) + \text{cone}(E) \quad \Leftrightarrow \quad P = \{x \mid Ax \leq b\}$$
+
+**In words:**
+
+- Every polyhedron can be written as convex hull of vertices PLUS conic hull of rays
+- OR as intersection of half-spaces
+
+**Special case:** Polytope (bounded) → $P = \text{conv}(V)$
+
+---
+
+## 21. Characteristic Vector χ^F
+
+$$\chi^F_e = \begin{cases} 1 & \text{if } e \in F \\ 0 & \text{if } e \notin F \end{cases}$$
+
+**Key property:** $c(F) = c^T \chi^F$ (dot product gives total cost)
+
+---
+
+## 22. BLP Standard Form
+
+```
+max  c^T x
+s.t. Ax ≤ b
+     x ∈ {0,1}^n
+```
+
+**Theorem:** COP ↔ BLP are equivalent (can convert either way)
+
+---
+
+## 23. TSP ILP Formulation — CRITICAL
+
+```
+min  Σ d_e x_e
+
+s.t. Σ_{e ∈ δ(v)} x_e = 2       for all v ∈ V    (degree 2)
+     Σ_{e ∈ E(W)} x_e ≤ |W| - 1  for all W ⊂ V   (no subtours)
+     x_e ∈ {0, 1}
+```
+
+---
+
+## 24. Vertex Cover ILP — Simple but Important
+
+```
+min  Σ x_v
+
+s.t. x_u + x_v ≥ 1    for all {u,v} ∈ E
+     x_v ∈ {0, 1}
+```
+
+---
+
+## 25. MST ILP Formulations
+
+**Cut Constraints:**
+$$\sum_{e \in \delta(W)} x_e \geq 1 \quad \forall \emptyset \neq W \subset V$$
+
+**Subtour Elimination:**
+$$\sum_{e \in E(W)} x_e \leq |W| - 1 \quad \forall W \subseteq V$$
+
+Both need: $\sum_{e} x_e = |V| - 1$
+
+---
+
+## 26. Logic as Constraints
+
+**AND:** $z = x \land y$
+$$z \leq x, \quad z \leq y, \quad z \geq x + y - 1$$
+
+**OR:** $z = x \lor y$
+$$z \geq x, \quad z \geq y, \quad z \leq x + y$$
+
+---
+
+## 27. Graph Coloring ILP (Assignment Model)
+
+```
+min  Σ y_c                              (# colors used)
+
+s.t. Σ_c x_{v,c} = 1                    for all v (one color per vertex)
+     x_{v,c} + x_{w,c} ≤ 1              for all {v,w} ∈ E, all c
+     x_{v,c} ≤ y_c                      (color used if assigned)
+     x_{v,c}, y_c ∈ {0, 1}
+```
+
+---
+
+## 28. Key ILP Exam Questions
+
+| Question                                | Answer                                           |
+| --------------------------------------- | ------------------------------------------------ |
+| "What are combinatorial problems?"      | Search for subset maximizing $\sum c_e$          |
+| "What does Minkowski-Weyl say?"         | $P = \text{conv}(V) + \text{cone}(E)$            |
+| "Write down a binary integer programme" | Use MST or Vertex Cover example                  |
+| "What is the ground set?"               | Elements you choose from (edges, vertices, etc.) |
+| "What is the feasible set?"             | Subsets satisfying constraints                   |
+
+---
+
+## 29. Branch-and-Bound — Core Concept
+
+```
+If L ≥ U: PRUNE (subtree can't improve best found)
+If LP infeasible: PRUNE
+If LP solution integral: update best, PRUNE
+If LP solution fractional: BRANCH on some variable
+```
+
+**Lower bound L** (dual bound): best possible in subtree
+**Upper bound U** (primal bound): best solution found so far
+
+---
+
+## 30. LP Relaxation
+
+Remove $x \in \{0,1\}$, add $0 \leq x \leq 1$
+
+| Problem      | LP Relaxation gives |
+| ------------ | ------------------- |
+| Minimization | **Lower** bound     |
+| Maximization | **Upper** bound     |
+
+If LP solution is integer → it's ILP optimal too!
+
+---
+
+## 31. Cutting Plane Method
+
+```
+1. Solve LP relaxation
+2. If solution x' is fractional:
+   - Find constraint that x' violates
+   - Add constraint to LP
+   - Repeat
+3. If no violated constraint: STOP
+```
+
+---
+
+## 32. Separation Problem
+
+> Given point $x'$, find violated constraint or prove none exists.
+
+**Theorem:** LP solvable in poly time ⟺ separation in poly time
+
+**TSP separation:** Use min-cut to find violated subtour constraint.
+
+---
+
+## 33. Independent Set ILP
+
+```
+max  Σ x_v
+
+s.t. x_u + x_v ≤ 1    for all {u,v} ∈ E
+     x_v ∈ {0, 1}
+```
+
+**Odd cycle cut:**
+$$\sum_{v \in C} x_v \leq \frac{|C| - 1}{2}$$
+
+Only odd cycles give new constraints (even cycles are implied by edge constraints).
+
+---
+
+## 34. Linear Ordering Problem (LOP) — CRITICAL
+
+**Definition:** Complete directed graph, arc weights $c_{uv}$.
+Find linear ordering maximizing sum of "respecting" arcs.
+
+**ILP:**
+
+```
+max Σ c_uv · x_uv
+
+s.t. x_uv + x_vu = 1          (tournament: exactly one direction)
+     x_uv + x_vw + x_wu ≤ 2   (no 3-cycles)
+     x ∈ {0,1}
+```
+
+---
+
+## 35. LOP Key Facts
+
+- **3-cycle constraints suffice** — longer cycles automatically excluded
+- **For n < 6:** LP relaxation is already integer
+- **For n ≥ 6:** Need Möbius ladder inequalities
+- **Separation:** Enumerate $O(n^3)$ triples → polynomial time
+
+---
+
+## 36. LOP as COP (3 vertices)
+
+| Component           | Description                                     |
+| ------------------- | ----------------------------------------------- |
+| **Ground set E**    | All 6 directed arcs                             |
+| **Feasible sets I** | Arc sets of size 3, tournament with no 3-cycles |
+| **Cost function**   | $c(I) = \sum c_{uv}$                            |
+
+---

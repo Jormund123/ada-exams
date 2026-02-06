@@ -1,0 +1,86 @@
+RHEINISCHE
+FRIEDRICH-WILHELMS-
+UNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercise Sheet 9
+Discussion:
+CW 3
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+This exercise sheet will be discussed in the second week after the Christmas break (January 13-16, 2026).
+Exercise 9.1 – Simple Branch-and-Bound (4 Points)
+Consider the following integer linear program for n∈N>0 with n odd.
+min xn+1
+s.t. 2·
+n
+xi + xn+1 = n
+i =1
+x ∈{0,1}n+1
+a) What is an optimal solution of the LP relaxation? (1p)
+b) What does the branch and bound tree for the ILP look like and how many sub-problems must be
+considered if LP relaxations are solved for the calculation of lower bounds? (3p)
+Exercise 9.2 – Separation of TSP cutting planes (5 Points)
+The Traveling Salespersom Problem (TSP) is defined as follows.
+Given: Complete undirected graph G= (V,E) with edge costs c : E→R≥0.
+Question: What is the minimum cost cycle that visits each vertex exactly once?
+We use the following notation for v ∈V,S⊊ V,F ⊆E :
+• δ(v) := {e= {v,u}∈E|u∈V}
+• δ(S) := {e= {v,u}∈E|u∈V \S,v ∈S}
+• x(F) :=
+e∈F xe
+Consider the following LP formulation, which we want to use as the base for a cutting-plane approach to
+the TSP:
+min
+e∈E
+c(e)·xe (1)
+s.t. x(δ(v)) = 2 for all v ∈V x(δ(S)) ≥ 2 for all S⊆V,∅̸= S̸= V xe ∈ [0,1] for all e∈E (2)
+(3)
+(4)
+a) If we tried to solve this LP directly, what problem would we encounter? (1p)
+b) For our cutting-plane approach, we start with the LP without sub-tour constraints (3). We then
+iteratively solve the LP, find a subset S for which the subtour constraint is violated by the current
+fractional solution and add this constraint to the formulation.
+State the separation problem that needs to be solved in each step. Explain how it can be solved in
+polynomial time. (4p)
+Page 1 of 2
+Exercise 9.3 – Branch-and-Cut for independent set (8 Points)
+Let G = (V,E) be an undirected graph. The Maximum Independent Set (MIS) problem seeks to find a
+subset S⊆V of maximum size such that no two vertices in S are connected by an edge.
+a) Model the Maximum Independent Set problem as an ILP. (1p)
+b) Next we want to derive constraints to enhance the model: Construct constraints based on the inter-
+action between cycles in G and independent sets. (2p)
+c) Argue using the constraints from (a) why only cycles of odd size are of interest in this context, i.e.,
+why do the even ones not yield any new information? (1p)
+d) Now, we want to introduce cutting planes using separation of the new constraint class. Given an
+optimum solution of the LP relaxation of the ILP, we aim to find violated odd-cycle constraints that
+are not yet added to our formulation: How can we identify violated odd-cycle constraints in polynomial
+time? You may assume as a black-box that you can find an odd cycle of minimum weight (with respect
+to arbitrary edge weights) in polynomial time. (2p)
+e) Develop a branching strategy for solving the MIS problem. Each branching decision should fix exactly
+one variable, i.e., decide whether a vertex is part of the independent set or not. Discuss your thoughts
+on the following in class: (2p)
+i) Which implication does fixing one vertex have on possible independent sets of the graph?
+ii) What would be a good branching choice when fixing exactly one variable?
+iii) What is a major drawback of branching on a single variable/vertex for the MIS problem?
+Exercise 9.4 – Santa’s assignment problem (3 Points)
+Santa has a problem. It is close to Christmas, his hard-working elves have prepared all the presents, but the
+addresses on the presents got mixed up, and now Santa has no idea where the presents are supposed to go.
+Luckily, he still has all the children’s wish-lists. We want to help him assign the presents to the children.
+We are given a set of children C and a set of presents P, and for each child a preference list of a subset of
+the presents. Santa’s elves have a smart way to process these preference lists into a happiness score, i.e.,
+we have a function h: C×P →Z quantifying how much happiness a certain present gives a child.
+Santa wants to maximize the overall happiness of the world’s children, while also making sure that every
+child receives at least one present.
+Formulate an Integer Linear Program that solves Santa’s problem. Since Santa does not know anything
+about ILPs, explain what the objective function and the constraints in your formulation mean.
+Merry X-mas!
+Page 2 of 2

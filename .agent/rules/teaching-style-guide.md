@@ -35,6 +35,8 @@ When I upload lecture slides:
      - appears frequently in exam questions, or
      - supports a proof or runtime argument the examiner can attack.
 
+4. The document should focus on what the examiner actually asks (from questions.txt) rather than formal mathematical details.
+
 ---
 
 ### Exercise Sheets

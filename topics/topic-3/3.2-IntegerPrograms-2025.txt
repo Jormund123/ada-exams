@@ -1,0 +1,385 @@
+Chapter III: Integer Linear Programming
+III.2: Integer Linear Programs for
+Combinatorial Optimization Problems
+Professor Dr. Petra Mutzel
+Abteilung fur Computational Analytics ¨
+Institut fur Informatik (Abt. 1) ¨
+Universit¨at Bonn
+WiSe 2025/26 VO 8 1 December 2025
+1 / 24
+Outline
+1 Combinatorial Optimization Problems
+2 Relationship to (Binary) Linear Optimization
+2 / 24
+Combinatorial Optimization Problems
+Combinatorial Optimization Problem
+Definition (Combinatorial Optimization Problem)
+Given:
+finite set E (ground set)
+subset I of the power set 2E of E (feasible sets)
+cost function c : E → R
+Find:
+a set I
+∗ ∈ I, so that c(I
+∗
+) = P
+e∈I
+∗ c(e) for maximization problems as
+large (for minimization problems as small, resp.) as possible.
+3 / 24
+Combinatorial Optimization Problems
+Examples
+Examples for Combinatorial Optimization Problems
+Travelling Salesman Problem (TSP) ✓
+Minimal Spanning Tree (MST) ✓
+Minimum of the function: f (x) = 3x
+2 + 2, x ∈ R ✗
+Problem: ✗
+max 2x1 + 3x2
+x1 + 2x2 ≤ 3
+2x1 − x2 ≤ 5
+x1, x2 ∈ N
+4 / 24
+Combinatorial Optimization Problems
+Examples
+Knapsack Problem ✗
+Given:
+n different types of goods in unlimited quantities with value ai > 0 and
+cost ci
+capacity of the backpack: b > 0
+Find: most valuable backpack
+0/1-Knapsack Problem ✓
+Given:
+n different goods with weight ai > 0 and value ci
+Capacity of the backpack: b > 0
+Find: most valuable backpack
+5 / 24
+Combinatorial Optimization Problems
+Representations of Polyhedra
+Definition (Polyhedron)
+A subset P ⊆ R
+n
+is called a polyhedron, if there exists a matrix A ∈ R
+(m,n)
+and a vector b ∈ R
+m with P = {x ∈ R
+n
+| Ax ≤ b}.
+Observation
+Every polyhedron P ̸= R
+n
+is the intersection of finitely many half spaces.
+Definition (Polytope)
+A polytope is a bounded polyhedron: P ⊆ {x ∈ R
+n
+| ||x||∞ ≤ B} for a
+constant B > 0.
+6 / 24
+Combinatorial Optimization Problems
+Linear Combinations
+Definition
+For x1, x2, . . . , xk ∈ R
+n
+and λ
+T = (λ1, λ2, . . . , λk ) ∈ R
+k
+the vector
+x =
+X
+k
+i=1
+λi xi
+is a linear combination of x1, x2, . . . , xk .
+If additionally λ ≥ 0, then x is a conic combination of x1, x2, . . . , xk .
+If additionally λ ≥ 0 and Pk
+i=1 λi = 1, then x is a convex
+combination of x1, x2, . . . , xk .
+The set of all vectors that can be represented as the corresponding
+combination of finitely many vectors from S (∅ ̸= S ⊆ R
+n
+) are called
+lin(S) (linear hull), cone(S) (conic hull) bzw. conv(S) (convex hull).
+7 / 24
+Combinatorial Optimization Problems
+Representations of Polyhedra
+Theorem 1 (Minkowski 1896, Weyl 1935) [without proof]
+Every polyhedron P ∈ R
+n
+can be represented in the form
+P = conv(V) + cone(E), where V und E are finite subsets of R
+n
+and vice
+versa.
+Therefore, we always have two representations of polyhedra:
+P = {x ∈ R
+n
+| Ax ≤ b} = conv(V) + cone(E)
+Polytopes can be represented by P = conv(V).
+8 / 24
+Combinatorial Optimization Problems
+Examples for Minkowski/Weyl
+P = conv(V), V =
+0
+1
+
+,
+
+1
+0
+
+,
+
+1
+1
+
+Alternative representations by inequalities:
+P =
+x
+y
+
+∈ R
+2
+| x ≤ 1, y ≤ 1, x + y ≥ 1
+
+9 / 24
+Combinatorial Optimization Problems
+Examples for Minkowski/Weyl
+0 1 2 3 4 5
+0
+1
+2
+3
+x
+y
+y = 3 − 2x
+y = 2.5 − x
+y = 1 − x/4
+y = 17/10 − 3x/5
+min 3x + 5y
+2x + y≥3
+2x + 2y≥5
+x + 4y≥4
+x ≥ 0
+y ≥ 0
+What are possible sets V and E for the representation of the polyhedron
+P = conv(V) + cone(E)?
+10 / 24
+Relationship to (Binary) Linear Optimization
+Relationship to Binary Linear Optimization
+Let m, n be positive integer numbers, b ∈ R
+m, c ∈ R
+n
+and A a m × n
+matrix with elements aij ∈ R.
+Definition (Linear Programs)
+A Linear Program (LP) is the problem to find a vector x ∈ R
+n
+, among all
+vectors satisfying the linear constraints Ax ≤ b, that maximizes (or
+minimizes, resp.) the linear objective function c
+T x.
+Abbreviated form:
+max c
+T
+x
+Ax ≤ b
+x ∈ R
+n
+11 / 24
+Relationship to (Binary) Linear Optimization
+Relationship to Binary Linear Optimization
+Let m, n be positive integer numbers, b ∈ R
+m, c ∈ R
+n
+and A a m × n
+matrix with elements aij ∈ R.
+Definition (Binary Linear Programs)
+A Binary Linear Program (BLP) is the problem to find a vector
+x ∈ {0, 1}
+n
+, among all vectors satisfying the linear constraints Ax ≤ b,
+that maximizes (or minimizes, resp.) the linear objective function c
+T x.
+Abbreviated form:
+max c
+T
+x
+Ax ≤ b
+x ∈ {0, 1}
+n
+12 / 24
+Relationship to (Binary) Linear Optimization
+Relationship to Binary Linear Optimization
+Theorem 2
+Any combinatorial optimization problem can be formulated as a Binary
+Linear Program (BLP) and vice versa.
+Preliminaries for proof:
+Definition
+For a finite set E and F ⊆ E, the characteristic vector χ
+F ∈ {0, 1}
+E
+for F and e ∈ E is defined as χ
+F
+e = 1 ⇔ e ∈ F.
+To each element e ∈ E we associate a component of the vectors χ
+F
+,
+and vice versa:
+every 0/1-vector x ∈ {0, 1}
+E
+is a characteristic vector of a subset Fx
+of E, and we have: Fx = {e ∈ E | xe = 1}.
+13 / 24
+Relationship to (Binary) Linear Optimization
+Proof of Theorem 2
+“⇐”: Given a BLP: max{c
+T x | Ax ≤ b, x ∈ {0, 1}
+n}:
+The associated combinatorial optimization problem is:
+E = {1, 2, . . . , n}
+I = {Fx ⊆ E | x ∈ {0, 1}
+E
+, Ax ≤ b}
+c(Fx ) = c
+T χ
+Fx
+“⇒”: Given a combinatorial optimization problem: (E, I, c).
+The associated BLP is:
+max{c
+T
+x | x ∈ PF } with PF = conv{χ
+F ∈ {0, 1}
+E
+| F ∈ I }
+Every polyhedron has a representation by inequalities.
+14 / 24
+Relationship to (Binary) Linear Optimization
+Proof fff
+We have even shown something stronger:
+Theorem 3
+Every combinatorial optimization problem can be formulated as a Linear
+Program.
+However, the following problems occur with such an LP formulation:
+calculation of the LP representation not possible in polynomial time
+it may have exponentially many inequalities
+inequalities have coefficients of exponential size
+15 / 24
+Relationship to (Binary) Linear Optimization
+Example 1: MST on Graph K3
+Given: complete graph G = (V,A) with 3 vertices
+Feasible set: Set of all spanning trees in G
+Introduction of 0/1-variables: xe = 1 ⇔ edge in the spanning tree
+Constraints:
+x1 + x2 + x3 = 2 (1)
+xe ≥ 0 for e = 1, 2, 3 (2)
+xe ≤ 1 for e = 1, 2, 3 (3)
+16 / 24
+Relationship to (Binary) Linear Optimization
+Example 1: MST on Graph K3 ff
+x1 + x2 + x3 = 2
+xe ≥ 0 for e = 1, 2, 3
+xe ≤ 1 for e = 1, 2, 3
+Characteristic vectors of the feasible spanning trees:
+(0, 1, 1),(1, 0, 1)(1, 1, 0)
+17 / 24
+Relationship to (Binary) Linear Optimization
+Example 2: MST on G = (V , E)
+Definition
+For W ⊆ V δ(W ) is called the cut of W : the set of all edges (w, v) ∈ E
+incident to w ∈ W with endpoint v ∈ V \ W .
+Feasible set: Set of all spanning subgraphs → Minimization takes care of
+possible cycles
+ILP-formulation 1:
+minP
+e∈E
+P
+ce xe
+e∈E
+P
+xe = |V| − 1
+e∈δ(W)
+xe ≥ 1 for all W ⊂ V, W ̸= ∅
+xe ≥ 0 for all e ∈ E
+xe ∈ {0, 1} for all e ∈ E
+18 / 24
+Relationship to (Binary) Linear Optimization
+Example 2: MST on G = (V , E) ff
+Definition
+For W ⊆ V the set E(W ) denotes the set of all edges with both
+endpoints in W .
+ILP-formulation 2:
+minP
+e∈E
+P
+ce xe
+e∈E
+P
+xe = |V| − 1
+e∈E(W)
+xe ≤ |W | − 1 for all W ⊆ V
+xe ≥ 0 for all e ∈ E
+xe ∈ {0, 1} for all e ∈ E
+If one omits the integer conditions, then one generally obtains
+fractional (i.e. non-integral) solutions.
+However, the complete description of the polytope of all spanning
+trees of a graph G is known.
+19 / 24
+Relationship to (Binary) Linear Optimization
+Complete LP Characterizations
+Complete LP Characterizations
+Such complete LP characterizations of combinatorial optimization
+problems by linear programs are rarely known,
+e.g. for optimization problems like MST or largest forests or minimum
+weight perfect matchings or also for special classes of graphs for more
+general problems, like bipartite graphs.
+However, if these are known, then they offer helpful alternative
+(polynomial) solution methods (as opposed to purely combinatorial
+algorithms) for the respective optimization problems and also their
+variants.
+20 / 24
+Relationship to (Binary) Linear Optimization
+Incomplete LP Characterizations
+Incomplete LP Characterizations
+Incomplete LP characterizations, such as LP relaxations (arise from
+ILPs by deleting the integer constraints) are also useful for solving
+optimization problems in practice.
+For example, you can use these to design good
+cutting plane algorithms
+exact Branch-and-Bound algorithms
+exact Branch-and-Cut algorithms
+approximation algorithms
+randomized algorithms
+in red: see next section
+21 / 24
+Relationship to (Binary) Linear Optimization
+ILP Milestones
+G.B. Dantzig, D.R. Fulkerson, and S. Johnson (1954), Solution of a Large
+Scale Traveling Salesman Problem, P-510, The Rand Corporation.
+Solved a 49 city instance of the TSP by hand.
+“Most important paper on integer (linear) programming”, Martin
+Gr¨otschel
+Introduced basic strategies that today almost all optimization codes
+relevant in practice employ.
+Questions:
+Biggest solved TSP instance nowadays? → 109.399 cities (stars)
+https://www.math.uwaterloo.ca/tsp/star/hyg.html
+Improvement of (M)ILP codes compared to 1991 (not including the
+speed-ups of computers)? → 6.5 million times faster
+22 / 24
+Relationship to (Binary) Linear Optimization
+(M)I(N)LP Solver Nowadays
+Image source: https://scipopt.org/index.php#welcome
+23 / 24
+Relationship to (Binary) Linear Optimization
+Conclusion
+COPs as ILPs
+Every combinatorial optimization problem can be formulated as a
+Binary Linear Program (BLP)
+Integer Linear Programs (ILP) are NP-hard...
+COPs as LPs
+Every combinatorial optimization problem can even be formulated as
+a Linear Program (LP).
+However, in general, this description cannot be calculated in
+polynomial time and may also be exponentially large.
+LPs can be solved in polynomial time.
+24 / 24

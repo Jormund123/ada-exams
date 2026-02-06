@@ -1,0 +1,63 @@
+RHEINISCHE
+FRIEDRICH-WILHELMSUNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Exercise Sheet 8
+Discussion:
+CW 51
+Exercise 8.1 – ILP problem formulations (4 Points)
+An integer linear program (ILP) is a linear program with the additional constraint that x ∈ Z
+n
+. Give an ILP
+formulation for each of the following problems:
+a) Traveling Salesperson: Let G = (V,E) be a complete undirected graph and let d : E → R
++
+0
+be a
+distance function. Find a travelling salesperson tour, i.e., a cycle in G that visits each vertex exactly
+once and has minimal length with respect to d. (2p)
+b) Vertex Cover: Given an undirected graph G = (V,E), find a minimal subset V
+′ ⊂ V such that every
+edge has one endpoint in V
+′
+. (1p)
+c) Bin Backing: Given are an arbitrary number of boxes of size K and n items with sizes wi ≤ K,
+i ∈ {1,...,n}. What is the minimum number of boxes needed to fit all the items? (1p)
+Exercise 8.2 – Minimums spanning tree formulation (2 Points)
+Can we change the first ILP formulation for MST presented in the lecture (slide 18) if all weights are strictly
+positive (w(e) > 0)? Do we lose generality if we only consider instances with strictly positive weights?
+Exercise 8.3 – ILP vs LP Relaxation (4 Points)
+Show that, in general, the distance between an optimal solution of an ILP and its relaxation (i.e. the
+same formulation with continuous variables instead of integer ones) might not be upper bounded. Here the
+distance is defined as |OPTrelaxation − OPTILP|.
+For this, give an example of an ILP with two variables x1,x2, where the objective is to maximize 1 · x2 and
+the distance is arbitrarily large.
+Exercise 8.4 – Logic operators as linear constraints (4 Points)
+Model the following logical statements as linear constraints, where x, y, z ∈ {0, 1}:
+a) z = x ∧ y (AND) (1p)
+b) z = x ∨ y (OR) (1p)
+c) z = x ⊕ y (XOR) (2p)
+Page 1 of 2
+Exercise 8.5 – Sudoku formulation (6 Points)
+In this exercise we want to consider formulations for the Sudoku problem. Sudoku is a game where you
+are given a field of 9x9 small squares, partitioned into 3x3 big squares (each containing 3x3 small squares).
+You then have to fill each of the small squares with a digit 1-9 such that every row, column and big square
+contains every digit exactly once.
+a) Assume you are given an empty Sudoku template (a field of 9x9 squares). Formulate linear constraints
+that model the Sudoku problem. (2p)
+b) If you play the game, you are usually given some small squares with fixed digits to start from. Adjust
+your formulation to include the input of such a partial solution. (2p)
+c) Let’s now consider a variant of Sudoku where the numbers in adjacent squares have to differ by more
+than one, i.e., you cannot have consecutive digits in neighboring squares. Again, formulate linear
+constraints modelling this. (2p)
+Page 2 of 2

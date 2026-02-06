@@ -1,0 +1,505 @@
+Chapter III: Integer Linear Programming
+III.3: Solution Methods of ILPs
+Professor Dr. Petra Mutzel
+Abteilung fur Computational Analytics ¨
+Institut fur Informatik (Abt. 1) ¨
+Universit¨at Bonn
+WiSe 2025/26 VO 10 15 December 2025
+1 / 24
+Outline
+1 Branch-and-Bound
+2 Branch-and-Bound based on LP-Relaxations
+3 Cutting Plane Method
+4 Branch-and-Cut Methods
+2 / 24
+Solution Methods of ILPs
+NP-completeness does not mean:
+that problem instances are unsolvable
+that only heuristics/approximation algorithms can be applied
+that the calculation of the optimal solution must have a long runtime
+Exact solution methods of BLPs
+Branch-and-Bound
+Branch-and-Bound for LP-Relaxations
+Cutting plane methods
+Combination of both: Branch-and-Cut
+3 / 24
+Branch-and-Bound
+Branch-and-Bound
+Branch-and-Bound
+Idea: A special form of restricted enumeration based on the divide &
+conquer principle.
+Early exclusion of entire solution groups in enumeration through
+bounding.
+We say
+L is a lower bound for an instance P of an optimization problem if
+copt(P) ≥ L holds for the optimal solution value.
+U is an upper bound if copt(P) ≤ U holds.
+4 / 24
+Branch-and-Bound
+Branch-and-Bound
+Branch-and-Bound for a Minimization Problem
+Idea: A special form of restricted enumeration based on the divide &
+conquer principle.
+At each node of the emerging search tree, it is checked whether the
+associated partial solution x
+′ must be pursued further.
+For this purpose, a lower bound L of the partial solution and an upper
+bound U are calculated at each node.
+U (for minimization problems) is called the primal bound and can be
+calculated with any heuristic (e.g. Greedy).
+L (for minimization problems) is called the dual bound and gives a
+bound for the best value that can be achieved by x
+′
+.
+5 / 24
+Branch-and-Bound
+Framework for Branch-and-Bound
+Assumption: Minimization problem
+Calculate a feasible initial solution with value U and a lower bound L
+for all possible solutions.
+If (U == L) → STOP: the solution found is optimal.
+Branching: Partition the solution set (into two or more subproblems).
+Search: Select one of the subproblems generated so far.
+Bounding: Calculate an upper bound Ui and a lower bound Li
+for
+one of these subsets Ti
+. Let U := min(U,Ui) be the value of the best
+solution found so far. If Li ≥ U, the partial solutions in the subset Ti
+need not be considered further.
+6 / 24
+Branch-and-Bound
+Enumeration Tree for MST
+MST on K3: min x1 + 2x2 + 3x3 (xe ∈ N ∀e ∈ E)
+x1 + x2 + x3 = 2
+0 ≤ xe ≤ 1 ∀e ∈ E
+a
+b c
+d e f g
+h i j k l m n o
+0 (.,.,.)
+(1,.,.) 1
+(1,1,.) 2
+3
+(1,1,1)
+4
+(1,1,0)
+5 (1,0,.)
+6
+(1,0,1)
+7
+(1,0,0)
+8 (0,.,.)
+(0,1,.) 9
+10
+(0,1,1)
+11
+(0,1,0)
+12 (0,0,.)
+13
+(0,0,1)
+14
+(0,0,0)
+x1 = 1 x1 = 0
+x2 = 1 x2 = 0 x2 = 1 x2 = 0
+Branch-and-Bound tries to truncate subtrees of the search tree so that
+they do not need to be evaluated
+7 / 24
+Branch-and-Bound
+Branch-and-Bound Tree for MST
+MST on K3: min x1 + 2x2 + 3x3 (xe ∈ N ∀e ∈ E)
+x1 + x2 + x3 = 2
+0 ≤ xe ≤ 1 ∀e ∈ E
+a
+b c
+d e f g
+h i j k l m n o
+0 (.,.,.)
+(1,.,.) 1
+(1,1,.) 2
+3
+(1,1,1)
+4
+(1,1,0)
+5 (1,0,.)
+6
+(1,0,1)
+7
+(1,0,0)
+8 (0,.,.)
+(0,1,.) 9
+10
+(0,1,1)
+11
+(0,1,0)
+12 (0,0,.)
+13
+(0,0,1)
+14
+(0,0,0)
+0
+U:5
+L:3
+1
+U:4
+L:3
+2
+U:3
+L:3
+done
+3 4
+5
+U:4
+L:4
+done
+6 7
+8
+U:5
+L:5
+done
+9 12
+10 11 13 14
+x1 = 1 x1 = 0
+x2 = 1 x2 = 0 x2 = 1 x2 = 0
+Branch-and-Bound cuts large subtrees here
+8 / 24
+Branch-and-Bound based on LP-Relaxations
+1 Branch-and-Bound
+2 Branch-and-Bound based on LP-Relaxations
+3 Cutting Plane Method
+4 Branch-and-Cut Methods
+9 / 24
+Branch-and-Bound based on LP-Relaxations
+LP-Relaxations
+Definition LP-Relaxation
+The LP that results from deleting the integer constraints from an ILP (and
+adding the trivial inequalities instead).
+Observation
+The solution of an LP relaxation provides a so-called dual bound for
+the optimal ILP value.
+For minimization problems → lower bound
+For maximization problems → upper bound
+The solution vector x
+′
+corresponding to L may not be integral and
+therefore not feasible for the ILP
+If x
+′
+is integral ⇒ optimal for ILP
+9 / 24
+Branch-and-Bound based on LP-Relaxations
+LP-Relaxations
+−1 0 1 2 3 4 5 6
+0
+1
+2
+3
+4
+P: convex hull of feasible points of ILP
+objective
+z
+∗
+PR: convex hull of LP-Relaxation
+z
+′
+x
+y
+Description of P by linear constraints is too complex and unknown
+Description of PR by linear constraints is known → optimize over PR
+Since P ⊆ PR → z
+′ provides dual bound 10 / 24
+Branch-and-Bound based on LP-Relaxations
+LP Relaxations
+minP
+e∈E
+ce xe
+x(δ(v)) = 1 for all v ∈ V
+✘✘✘✘✘ xe ∈ {0, 1} for all e ∈ E
+0 ≤ xe ≤ 1 for all e ∈ E
+If the solution of the LP relaxation is integer and feasible
+we have found the optimal solution. → STOP (There cannot exist a
+solution with a better solution value.)
+Otherwise: 3 possibilities
+1 Add further linear constraints from the LP description of the problem
+→ Cutting Plane Method
+2 Integration into Branch-and-Bound
+3 Combine (1) and (2) → Branch-and-Cut
+11 / 24
+Branch-and-Bound based on LP-Relaxations
+Branch-and-Bound based on LP-Relaxation
+Assumption: Minimization problem
+1 While not processed B&B nodes (subproblem) exist, choose one
+2 Solve LP-relaxation → solution x
+′
+leading to local lower bound L
+3 If global primal bound smaller (better) than local lower bound or
+(sub)problem unsolvable (infeasible) → reject subproblem → Bound, goto 1
+4 If x
+′
+is fractional: choose a fractional variable xi and create two
+(sub)problems in which xi
+is fixed to 0 and to 1, resp. → Branch, goto (1)
+5 If x
+′
+is integral: update global primal bound (feasible solution) →
+(sub-)problem solved, goto 1
+6 Output global primal bound
+Remark (minimization problem)
+local primal bounds can take the role of global primal bounds
+lower bounds are valid only for instances in the subtree of the search tree
+12 / 24
+Branch-and-Bound based on LP-Relaxations
+Branching on LP-Relaxation
+0 1 2 3 4 5 6 7
+0
+1
+2
+3
+4
+P: convex hull of feasible points of ILP
+objective
+PR: convex hull of LP-Relaxation
+z
+′
+z
+′
+<
+{z | z ≤ ⌊x
+′⌋} {z | z ≥ ⌈x
+′⌉}
+z
+′
+>
+x
+y
+Branching on a fractional variable from solution z
+′ = (x
+′
+, y
+′
+) corresponds
+to adding two cutting planes
+get two subproblems and optimize → solutions z
+′
+< and z
+′
+> → branch
+13 / 24
+Branch-and-Bound based on LP-Relaxations
+Branch-and-Bound based on LP-Relaxation
+0
+L:0, fractional
+L:10.5, fract 1 L:12.8, fract 2
+L:14, integral 3 4
+infeasible
+5
+L:15,fract
+xi = 1 xi = 0
+xj = 1 xj = 0 xk = 1 xk = 0
+Branch-and-Bound based on LP-relaxation for a fictional minimization
+problem
+(Dual) lower bound L shown in blue.
+Node 5 can be fathomed, because 15 is larger than the best solution found
+so far; hence the subtree cannot contain a better feasible solution.
+14 / 24
+Cutting Plane Method
+1 Branch-and-Bound
+2 Branch-and-Bound based on LP-Relaxations
+3 Cutting Plane Method
+4 Branch-and-Cut Methods
+15 / 24
+Cutting Plane Method
+Cutting Plane Method: Convex Hulls
+−1 0 1 2 3 4 5 6
+0
+1
+2
+3
+4
+P: convex hull of feasible points of ILP
+objective
+z
+∗
+PR: convex hull of LP-Relaxation
+x
+y
+Description of P by linear constraints is too complex and unknown
+Description of PR by linear constraints is known → optimize over PR
+15 / 24
+Cutting Plane Method
+Cutting Plane Method: Add Cutting Plane
+−1 0 1 2 3 4 5 6
+0
+1
+2
+3
+4
+P: convex hull of feasible points of ILP
+objective
+PR: convex hull of LP-Relaxation
+z
+′
+1
+cutting planes
+x
+y
+z
+′
+1
+is not integral ⇒ add constraint that cuts off z
+′
+1
+(cutting plane) but no
+feasible integral point ⇒ The best such constraints are facet-inducing
+constraints of P
+16 / 24
+Cutting Plane Method
+Cutting Plane Method
+−1 0 1 2 3 4 5 6
+0
+1
+2
+3
+4
+PR: convex hull of LP-Relaxation
+objective
+z
+′
+1
+cutting plane
+P: convex hull of feasible points of ILP
+z
+′
+2
+cutting plane
+z
+∗
+x
+y
+z
+′
+1
+is not integral ⇒ add constraint that cuts off z
+′
+1
+(cutting plane) but no
+feasible integral point
+⇒ In practice, a partial description of P suffices
+17 / 24
+Cutting Plane Method
+Cutting Plane Method
+−1 0 1 2 3 4 5
+−1
+0
+1
+2
+3
+objective
+convex hull of LP-Relaxation
+convex hull of feasible points
+z
+′
+z
+′
+2
+z
+∗
+x
+y
+z
+′
+is not integral ⇒ add constraint that cuts off z
+′
+(cutting plane) but no
+feasible integral point
+18 / 24
+Cutting Plane Method
+Cutting Plane Method
+Separation Problem (informal)
+Given: point x
+′
+and a class of linear constraints C
+Find: at least one constraint from C which is violated at x
+′ or prove
+that no such constraint exists
+Theorem (Gr¨otschel, Lovasz, Schrijver)
+A linear optimization problem over a class of linear constraints C is
+solvable in polynomial time if and only if the corrresponding separation
+problem on C can be solved in polynomial time.
+(without proof)
+19 / 24
+Cutting Plane Method
+Cutting Plane Method
+Cutting plane method for LP with constraint set C
+1 Start with a subset of all constraints C
+′ ⊂ C → LP’
+2 Solve LP’ → let x’ be the found solution
+3 Solve the separation problem for C on x’
+1 If violated constraints c ∈ C \ C′
+found: add them to C
+′
+and LP’, goto
+(2)
+2 Otherwise → STOP, LP solved
+20 / 24
+Branch-and-Cut Methods
+1 Branch-and-Bound
+2 Branch-and-Bound based on LP-Relaxations
+3 Cutting Plane Method
+4 Branch-and-Cut Methods
+21 / 24
+Branch-and-Cut Methods
+Branch-and-Cut Method
+Combination of Branch-and-Bound with cutting planes
+Branch-and-Bound, where the LP-relaxations are solved and/or
+strengthened by cutting planes
+21 / 24
+Branch-and-Cut Methods
+Branch-and-Cut Method
+0 1 2 3 4 5 6 7
+0
+1
+2
+3
+4
+P: convex hull of feasible points of ILP
+objective
+PR: convex hull of LP-Relaxation
+z
+′
+z
+′ = (x
+′
+, y
+′
+)
+z<
+{z | z ≤ ⌊x
+′⌋} {z | z ≥ ⌈x
+′⌉}
+z>
+x
+y
+Branch on a fractional variable corresponds to adding two cutting planes
+We get two subproblems and optimize those further, either by adding
+additional cutting planes (CUT) or by branching (BRANCH)
+22 / 24
+Branch-and-Cut Methods
+Branch-and-Cut Algorithm
+1 Cut: Solve the current LP (possibly using cutting planes); the LP
+consists of constraints of the LP-relaxation AND/OR of a set of any
+other feasible linear constraints valid for the ILP solutions
+2 Branch: Branch if the LP solution is not feasible and no violated
+cutting planes are found
+3 Exploit: Find feasible integral solution based on the fractional
+solution (primal heuristic)
+4 Bound: Fathom non-profitable subtrees in the branch-and-bound
+search tree
+5 Price: In the case that the number of variables is very large, we can
+start with a subset only and add parts of them during optimization if
+necessary → column generation → Branch-and-Cut-and-Price
+Many possibilities for improvements ⇒ Algorithm Engineering
+23 / 24
+Branch-and-Cut Methods
+Example: Linear Ordering Problem
+→ see the following section
+24 / 24

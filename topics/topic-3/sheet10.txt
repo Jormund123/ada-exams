@@ -1,0 +1,111 @@
+RHEINISCHE
+FRIEDRICH-WILHELMSUNIVERSITÄT BONN
+INSTITUT FÜR
+INFORMATIK DER
+UNIVERSITÄT BONN
+Institut für Informatik
+Abteilung 1
+Prof. Dr. Petra Mutzel
+Laura Bülte
+Michael Kaibel
+Charlotte Bockhorst
+Exercises for
+Algorithms for Data Analysis
+WS 2025/26
+Exercise Sheet 10
+Discussion:
+CW 4
+Exercise 10.0 – BONUS - Recap Matchings
+The next topic after graph edit distance will be algorithms for the streaming model, with a special focus
+on bipartite matchings. If you haven’t encountered bipartite matchings so far, check out the definition of
+matchings, alternating paths, augmenting paths and the theorem by Berge, e.g. on the Wikipedia pages for
+matchings and Berge’s theorem or in Combinatorial Optimization.
+Exercise 10.1 – Linear ordering problem (5 Points)
+a) Prove that it suffices to exclude all the cycles of length 3 in our ILP for the LOP (see slide 30). (3p)
+b) Is this also true for the LP relaxation? If we added cycle inequalities of larger size to the LP-relaxation
+of the LOP, would the polytope change? (2p)
+Exercise 10.2 – Acyclic subgraph and linear ordering polytopes are not integer (5 Points)
+In the lecture it was discussed that for n < 6 the linear ordering polytope (LOP) is integer. The same is true
+for the acyclic subgraph polytope (ASP). In this exercise you are to show that for n = 6 the LOP and ASP
+are not integer.
+a) Construct a graph G with 6 vertices and a fractional solution x to the relaxed ASP such that x has a
+better objective value than any integer solution. (3P)
+b) Construct a cost vector c for the complete directed graph with 6 vertices and a fractional solution x
+to the relaxed LOP such that x has a cost lower than any integer solution. (2P)
+Hint 1: In the lecture it was discussed that on a 3 Moebius ladder M (see 1) any integer solution for the
+linear odering problem must have xe = 0 for at least 2 edges in M. The same is true for the acyclic subgraph
+problem. Find a fractional solution x such that P
+e∈M xe > 7 that stil satisfies all cycle inequalities.
+1
+2 3
+4
+5 6
+Figure 1: A 3-Moebius ladder on 6 vertices
+Hint 2: Consider how you can turn your acyclic subgraph problem and fractional solution from a) into a
+linear ordering problem and a corresponding fractional solution.
+Page 1 of 2
+Hint 3: For proofs it may be easier to work with the LP formulation which contains variables xuv and xv u
+(the first one discussed in the lecture). Any proof for this LP also applies to the ILP which has only one
+variable per vertex pair.
+Exercise 10.3 – Graph edit distance BLP formulations (7 Points)
+In this exercise, we take a closer look at the BIP-F1 formulation for GED that was presented in the lecture
+(see slide 36). The following table shows the costs used in the BLP formulation, and the corresponding edit
+operation:
+Edit operation Cost
+Substitution of vertex i ∈ V
+G by vertex k ∈ V
+H ci ,k
+Deletion of vertex i ∈ V
+G ci ,ϵ
+Insertion of vertex k ∈ V
+H cϵ,k
+Substitution of edge ij ∈ E
+G by edge kl ∈ E
+H cij,kl
+Deletion of edge ij ∈ E
+G cij,ϵ
+Insertion of edge kl ∈ E
+H cϵ,kl
+We will proof Theorem 4:
+Let G and H be graphs with V
+G ≤ V
+H and let (x
+∗
+,w∗
+) be an optimal solution to BIP-F1 with value z
+∗
+.
+Then we have GED(G,H) = z
+∗
+.
+a) Show that x
+∗
+corresponds to a valid node map π, i.e., show that every vertex in G/H is either mapped
+to/from exactly once, or it is deleted/inserted. Further, show that the total cost of the node edit
+operations of π equals the cost incurred by x
+∗
+. (eq. (22) on slide 36). (2p)
+b) Show that w
+∗
+corresponds to an edge map ρ induced by this node map, i.e., an edge ij ∈ E
+G is mapped
+to an edge kl ∈ E
+H if and only if the set of end points are mapped to each other by π. Further, show
+that the total cost of the edge edit operations of ρ equals the cost incurred by w
+∗
+. (eq. (23) on slide
+36). (2p)
+c) Let π : V
+G+ϵ → V
+H+ϵ be a node map between G and H with total edit cost C. Construct a feasible
+solution (x,w) to BIP-F1 with cost C. (2p)
+d) Using a)-c), proof Theorem 4. (1p)
+Exercise 10.4 – BONUS - Feedback arc set problem (5 Points)
+The Feedback Arc Set Problem (FAS) is defined as follows:
+Instance: Directed graph G = (V,E).
+Task: Find the smallest subset F ⊆ E that contains at least one edge of every cycle in G.
+a) Explain the relation between FAS and the linear ordering problem. How can FAS be solved using
+methods for LOP? (3p)
+b) Now consider FAS for undirected graphs, for which the problem is solvable in polynomial time. Give
+an efficient algorithm for the problem. What is the size of the solution? (2p)
+Page 2 of 2

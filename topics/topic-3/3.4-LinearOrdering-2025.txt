@@ -1,0 +1,699 @@
+1
+Section III.4: Linear Ordering Problem
+(LOP)
+
+4.1 Introduction to LOP
+Definition: Linear Ordering Problem (LOP)
+Given: complete directed graph G=(V,A) with arc weights cuv for
+all arcs (u,v) in A.
+Find: linear ordering of the vertices so that the sum of weights
+of all arcs respecting this ordering is maximized.
+1 2 3 4
+Alternative Definition LOP
+Given: nxn matrix C with entries cij
+Find: a permutation π of the rows and columns so that the sum
+of weights of all elements in the upper triangle is maximized:
+ max ∑ ∑ cπ(i)π(j)
+ i=1,...,n-1 j=i+1,...,n
+Applications of the LOP
+• Ranking of data from pairwise orders, e.g., in tournament sports
+• Rankability of data for e.g., recommender systems, resource
+allocation, web search, cybersecurity, … (see tutorials)
+• Triangulation of input-output matrices (analysis of economies)
+• Stratification in excavations in archeology
+• Crossing minimization in graph drawing
+1 2 3 4
+9
+Crossing Minimization in Graph Drawing
+Hierarchical Drawings
+• data flow diagrams
+• Workflow diagrams
+• activity charts
+• Organigrams
+• UML sequence diagrams
+• UML activity diagrams
+• metabolic pathways
+• …
+Algorithm by Sugiyama, Tagawa, Toda 1981
+10
+Introduction to Hierarchical Graph Drawing
+• Idea by Sugiyama, Tagawa and Toda 1981
+• Most popular graph drawing approach for directed
+graphs
+• very good suited for directed acyclic graphs (DAGs)
+Assumption in this section: G ist a DAG
+• If G contains directed cycles, then: reverse some of the
+edges (minimize the number of arcs to reverse so that G
+ges acyclic) (NP-hard problem)
+• If G is undirected: Direct the edges so that no directed
+cycles are introduced
+11
+Concept Maps
+12
+Mind Map: Understanding Learning Theory
+13
+Metabolic
+Networks
+14
+UML Diagram
+15
+Automatic
+Layout
+16
+!?#ABCDEF
+!"#ABCBDBEFGHF#ABI-
+.LGI"#ABCBDBEF
+!"#ABCBDBEFGMDNDAC
+!?#ABCDEF
+O!PGHF#ABIOEE4CG!"R"BS"4GPEART"I
+GHI-KLMN
+GOPEKIQPBD#QR
+GIQSTM#
+O!8
+O!PGMDNDAC
+GHIUKLM
+GVBWWXCQDK<MRQ
+GVBWWXCQDK=QT>DCWPCM#
+GHIUKVPSPBT
+G-BP?MDCPEKLM
+G@BD>?STQKADRQDKLMN
+GVBWWXCQDTKB#CMC>Qa=QXCCQDEKLMPQ
+G=SPQKIQ>QCCQR
+O!PGV"N4"I
+GbAc
+GOPEKADRQDQR
+GOPEKIQ>QCCQRKPMK=SPQ
+GOPEKM#K=QXCCQDEKLMPQ
+GOPEK<MB#PQR
+GOPEKB#TWQ>PQRKAd
+GOPEKIQeQ>PQR
+GOPEK->>QWPQR
+Gb#CPKLQPK@DC>Q
+GOPEKM#KHIGVBWWXCQDKB#CMC>QKLMN
+GVBWWXCQDKB#CMC>QKUSXBQ
+GHIUKfMPSXKg?h>XNKUSPi
+O!PGW"DNB;
+O!<GHF#ABIOEE4CG!"DAIF"4G<ED"
+GHILKLM
+GVBWWXCQDK<MRQ
+GVBWWXCQDK=QT>DCWPCM#
+GVBWWXCQDTKB#CMC>Qa=QXCCQDEKLMPQ
+GHIUKIQjNKLM
+G@BD>?STQKADRQDKLMN
+G-BP?MDCPEKLMN
+G=SPQKIQPBD#QR
+O!<GV"N4"I GBPQkK<MRQ
+GBPQkK=QT>DCWPCM#
+GOPEKM#KHIL
+GOPEKIQPBD#QR
+Gb#CPKLQPK@DC>Q
+GHILKIQSTM#K<MRQ
+GIQSTM#K=QT>DCWPCM#
+GVBWWXCQDK<DQRCPKLMPQ
+GVBWWXCQDKUSXBQ
+O!<GW"DNB;
+G=SPQKIQABCDQR
+GOPEKIQABCDQR
+M=;BDG;BF"GHD">
+!?#ABCDEF
+.LGHF#ABI-
+.AIRTNC"GLI4"I .LGMDNDAC
+GlSDQ?MBTQ
+GVBWWXCQDK<MRQ
+GbAc
+GOPEKIQABCDQR
+G=BQK=SPQ
+G@DC>Q
+GfDSRQK=CT>MB#PKm
+GfDSRQK=CT>MB#PKn
+GoC#QKVPSPBT
+.LG!"#ABCBDBEFGW"DNB;
+GABQTPKLM
+GIQABCTPCM#KfEWQ
+G<DQSPQRKpE
+GIQABQTPQRKpE
+G-BP?MDCTQRKpE
+G=SPQKfCkQK<DQSPQR
+GIQABQTPKVPSPBT
+.LG!"#ABCBDBEFGV"N4"I
+G@BD>?STQKADRQDKLM
+GVBWWXCQDK<MRQ
+GVBWWXCQDK=QT>DCWPCM#
+GADRQDKfEWQ
+GpBEQD
+G=SPQKfCkQK<DQSPQR
+GADRQDKVPSPBTKqK@AKVPSPBT
+GVQPPXQkQ#PK=CT>MB#P
+G-BP?MDCPEKLM
+GlarK<MRQ
+GlarK=QT>DCWPCM#
+GUQDTCM#KLM
+.AIRTNC"GLI4"IGV"N4"I GVWQ>CSXKB#TPDB>PCM#T
+GIQABCTCPCM#KLM
+GADRQDC#sKbAc
+GOPEKIQABCDQR
+GOPEKDQ>QCCQR
+G=SPQKIQABCDQR
+GVPS#RSDRK<MTP
+GVBWWXCQDK@DC>Q
+GfDSRQK=CT>MB#PKm
+GfDSRQK=CT>MB#PKn
+GIQABQTPQRKpE
+GfMPSXKUSXBQKg?h>XNKUSPi
+GoC#QKBPQkKVPSPBTKqK@AKVPSPBT
+.AIRTNC"GLI4"IGW"DNB;
+!?#ABCDEF
+MA==;B"IGHF#ABIMA==;B"IGMDNDAC
+GVBWWXCQDK<MRQ
+GVBWWXCQDKLSkQ
+GVBWWXCQDKVPSPBT
+GVQPPXQkQ#PK=CT>MB#PKt
+G@SEkQ#PKfQDkTKg=SETi
+GVPDQQPKLMN
+GVPDQQPKLSkQ
+GVBuBDu
+G<CPE
+G@?ETC>SXK@MTPSXK<MRQ
+G@NANKpMhKLMN
+G@MTPSXK<MRQ
+GpS#vC#sK=QPSCXT
+G?GkSCXK-RRDQTT
+G<DQRCPMDK<M#PS>PK@QDTM#
+Gc=KLSkQ
+Gc=KLBkuQD
+G@?M#QKLBkuQD
+GZShKLM
+GVPSPQkQ#PK=QXCCQDEKcQP?MR
+GcQP?MRKMjK@SEkQ#P
+GVBWWXCQDKISPC#s
+G=SPQK<DQSPQR
+GfDSRQK=CT>MB#PKm
+GfDSRQK=CT>MB#PKn
+MA==;B"IG?NCD"IG@B;"
+AINFCNRDBEFGA-="
+GBPQkK<MRQ
+GBPQkK=QT>DCWPCM#
+MDERBGHD">C
+G?hWQ#>QK<MRQ
+G<MTPK<Q#PQD
+G=QT>DCWPCM#KMjK@DMRB>P
+GOBMPQRKIQjQDQ#>QKLMN
+<EFCMDERBGHD">
+OaG8RREAFD MDERBG8RREAFD
+E>=;E-""GOaG8RREAFDC
+cA4d"D
+G?kWXMEQQKLMN
+GLSkQ
+GVBD#SkQ
+GB=KLMN
+E>=;E-""G?NCD"IG@B;"
+!?#ABCDEF
+eNI4"IG!"=EID
+!?#ABCDEF
+HD">GHF#ABIGVBWWXCQDK<MRQ
+GBPQkK<MRQ
+GlarK<MRQ
+GVBWWXCQDK@DC>Q
+G=SPQKA#
+G=SPQKAjj
+GcShKVPM>vKoQCQX
+GcC#CkBkKVPM>vKoQCQX
+GcBXPCWXQT
+GfEWQKgcI@KMDKIA@i
+GIQ>MDRKOPEKM#K=aLMPQx
+GIQ>MDRKOPEK<MB#PQRx
+GB#TWQ>PQRKAdx
+GIQeQ>PQRx
+G->>QWPQRx
+G?AO
+GVBWWXCQDKoQSRKfCkQ
+GADRQDC#sKbAc
+G<M#CQDTCM#KZS>PMD
+MA==;B"IGghVGHD">G?NDIBI
+GlSDQ?MBTQK<MRQ
+GlSDQ?MBTQK=QT>DCWPCM#
+gNI"TEAC"
+GlarK<MRQ
+GBPQkK<MRQ
+GB#CQ#PMDEKM#KrMXR
+GB#CQ#PMDEKM#KADRQD
+GVBWWXCQDK<MRQ
+GoQSRKfCkQ
+GB#CQ#PMDEKM#KrS#R
+GcC#CkBkKADRQDKOPE
+GcShCkBkKADRQDKOPE
+GIQGMDRQDK@MC#P
+gNI"TEAC"GHD">
+GlSDQ?MBTQ
+G@DMRB>PKHDMBW
+cA-"IG!E;"
+GBPQkK<MRQ
+GBPQkK=QT>DCWPCM#
+GVPS#RSDRK<MTP
+GVPM>vC#sKbAc
+Gf-y
+GcSPQDCSXK<MTP
+GoSTPK<MTPK@DC>Q
+GB#CQ#PMDEKb#CP
+GZMDQ>STPKcQP?MR
+G=aLMPQKC#ABCDE
+GcI@KGKoQSRKfCkQ
+GcI@KGKVBWWXCQDK<MRQ
+GcI@KGKlar
+HD">G?NCD"IG@B;"
+pBEQD
+Automatic
+Layout
+17
+Sugiyama Approach
+1. Level Assignment
+2. Crossing minimization
+3. Coordinate Assignment
+18
+Algorithm by Sugiyama et al.
+3 Phases:
+1. Level Assignment
+– Each node is assigned to a layer so that all edges point from top
+to bottom.
+2. Crossing Reduction / (- Minimization)
+– The nodes are then arranged (reordered) within the layers in
+such a way that there are as few crossings as possible.
+3. Node Positioning
+– The nodes and edges are given their exact coordinates so that
+zig-zag edges are prevented
+19
+taz
+20
+21
+Animation of the Sugiyama et al. Approach
+22
+For Comparison: Original 
+Sugiyama Algorithm
+24
+One-Sided Crossing Minimization Problem on 2 Layers
+1
+0 1 2 3 4 5
+0 2 3 4
+Given: Bipartite graph on 2 layers, permutation of the upper
+layer is fixed
+Find: Permutation of the nodes in the lower layer that
+minimizes the number of edge crossings
+25
+u 1 v
+0 1 2 3 4 5
+2 4
+cost of u < v: cuv = 3
+fix
+permute
+Transformation into the Linear Ordering Problem
+One-Sided Crossing Minimization Problem on 2 Layers 
+26
+v 1 u
+0 1 2 3 4 5
+2 4
+cost of u < v: cuv = 3
+cost of v < u: cvu = 5
+fix
+permute
+Transformation into the Linear Ordering Problem
+One-Sided Crossing Minimization Problem on 2 Layers 
+27
+1 u
+0 1 2 3 4 5
+v 2 4
+fix
+permute
+Find a permutation π of 1,2,...,n minimizing
+Linear Ordering Problem
+Transformation into the Linear Ordering Problem
+cost of v < u: cvu = 5 cost of u < v: cuv = 3
+28
+4.3 ILP-Formulation for LOP
+Find: a spanning, acyclic tournament in G with maximum weight
+1 2 3 4
+Def. Tournament: T⊆A: either (u,v)∈T or (v,u)∈T but not both
+Given: complete directed graph G=(V,A) with arc weights cuv for
+all arcs (u,v) in A.
+29
+Spanning Acyclic Tournament
+u v
+u w
+v
+u w
+v
+• Let T be a spanning acyclic tournament
+• Forbidden structures in T:
+Variables 𝑥!" for all
+arcs 𝑢𝑣∈𝐴 𝑥!" + 𝑥"! = 1
+𝑥!" + 𝑥"# + 𝑥#! ≦ 2 𝑥"! + 𝑥#" + 𝑥!# ≦ 2
+30
+ILP for LOP
+3-cycle Inequalities
+Trivial Inequalities
+Equalities
+exclusion of 3-cycles suffices,
+exclusion of longer cycles not necessary
+Spanning Acyclic Tournament
+Forbidden structures in T:
+u v
+u w
+v
+u w
+v
+𝑢 < 𝑣: 𝑠𝑒𝑡 𝑥"! = 1 − 𝑥!"
+𝑥!" + 𝑥"! = 1
+𝑥!" + 𝑥"# + 𝑥#! ≦ 2 𝑥"! + 𝑥#" + 𝑥!# ≦ 2
+𝑥!" + 𝑥"# − 𝑥!# ≦ 1 𝑥!" + 𝑥"# − 𝑥!# ≧ 0
+𝑢 < 𝑣 < 𝑤:
+Order vertices w.r.t. their IDs, introduce only variables for which
+32
+Projection:
+3-cycle inequalities
+Trivial inequalities
+From now on only variables xuv for u < v
+𝑥"! = 1 − 𝑥!"
+ILP for LOP
+33
+Examples n=3: x12 x13 x23
+Permutation
+<1,2,3>
+<2,1,3>
+<2,3,1>
+<1,3,2>
+<3,1,2>
+<3,2,1>
+charact. vector
+(1,1,1)
+(0,1,1)
+(0,0,1)
+(1,1,0)
+(1,0,0)
+(0,0,0) x12
+x13
+<3,2,1> <3,1,2>
+<2,3,1>
+<2,1,3>
+<1,2,3>
+<1,3,2>
+x23
+x12+x23-x13=0
+x12+x23 1 3 -x13=1
+2
+1 3
+2
+Geometric Interpretation LOP
+34
+• n<6: Removal of the integrality constraints does not make a
+difference
+• I.e., the vertices of the relaxed LOP polytope are all integral
+• n≥6: additional constraints are necessary in order to describe
+the convex hull of all feasible solutions
+LP-Relaxation of the ILP
+4.4 Solving the LOP ILP
+Example: Moebius Ladder Inequalities
+1 2k-1
+2 2k
+3 4
+Let M⊆E be a Moebius ladder
+in D=(V,E) with k contiguous
+cycles building a cycle where k
+is odd
+It is necessary to delete at
+least (k+1)/2 arcs in order to
+make G acyclic
+Moebius inequalities describe facets of the LOP polytope
+Research area: polyhedral combinatorics
+?
+37
+Polyhedral Combinatorics: LOP
+Number of facets for the LOP polytope (convex hull of all
+characteristic vectors describing permutations) of l elements
+l n
+3
+4
+5
+6
+7
+8
+8
+20
+40
+910
+87,472
+>488,602,996
+In practice we need only few of those:
+LOP for l=79 is solvable within 3 seconds on a notebook
+via Branch-and-Cut / cutting plane approach.
+number of facets,
+i.e., the number of
+theoretically
+necessary linear
+inequalities
+38
+Cutting Plane Approach
+(1) Start with a subset of the constraints
+(2) Solve the LP relaxation, let x‘ be the found optimal solution
+(3.1) If NO: STOP (LP relaxation solved)
+(3.2) IF YES: Find them, add them to the LP relaxation, and goto (1)
+(3) Decide, if there exist additional restrictions aT
+x<=b0 , so that
+aT
+x‘>b0?
+separation problem
+39
+Recall: Theorem by Grötschel, Lovasz, Schrijver
+The optimization problem is solvable in polynomial time
+the corresponding separation problem is solvable in polynomial time.
+Question: Can we solve the separation problem for LOP in polynomial
+time?
+40
+Example: LOP LP-Relaxation
+41
+Recall: Theorem by Grötschel, Lovasz, Schrijver
+The optimization problem is solvable in polynomial time
+the corresponding separation problem is solvable in polynomial time.
+Question: Can we solve the separation problem for LOP in polynomial
+time?
+YES, by enumeration and testing all inequalities
+(there are only a polynomial number of inequalities)
+42
+Definition: Acyclic Subgraph Problem
+Given: directed graph G=(V,A) with arc weights cuv for all arcs
+(u,v) in A.
+Find: cycle-free subset of arcs so that the sum of weights of
+these arcs is maximized.
+1 2 3 4
+Example: Acyclic Subgraph Problem
+43
+Comparison to LOP
+Definition: Linear Ordering Problem (LOP)
+Given: complete directed graph G=(V,A) with arc weights cuv for
+all arcs (u,v) in A.
+Find: linear ordering of the vertices so that the sum of weights
+of all arcs respecting this ordering is maximized.
+1 2 3 4
+44
+ILP for Acyclic Subgraph
+Can we solve the LP-relaxation in polynomial time?
+Solution: via separation (GLS Theorem)
+Problem: exponentially many cycle inequalities
+45
+Theorem by Grötschel, Lovasz, Schrijver
+Question: Can we solve the separation problem for the Acylic
+Subgraph Problem?
+The optimization problem is solvable in polynomial time
+the corresponding separation problem is solvable in polynomial time.
+Separation for LP-Relaxation of Acyclic Subgraph
+Rewrite cycle inequalities for cycle C:
+Separation problem for cycle inequalities:
+Given some vector x, find a cycle inequality violated at x
+or prove that no such C exists.
+Separation for LP-Relaxation of Acyclic Subgraph
+• For all arcs f ∈ A:
+• Fix the arc f = (u,v)
+• Compute the shortest (v,u)-path in D with arc weights 1-xe
+• If the path length W+(1-xuv)<1, Then: violated inequality found,
+(which is then added to the LP within a cutting plane approach)
+• Else: have proof that no violated inequality containing f exists.
+We search a cycle C so that:
+Given some vector x, find a cycle inequality violated at x
+or prove that no such C exists.
+Separation Routine for cycle inequalities:
+48
+Theorem by Grötschel, Lovasz, Schrijver
+Question: Can we solve the separation problem for the Acylic
+Subgraph Problem?
+YES, the separation problem for the cycle inequalities
+can be solved using shortest path algorithms
+The optimization problem is solvable in polynomial time
+the corresponding separation problem is solvable in polynomial time.
+49
+Cutting Plane Approach
+(1) Start with a subset of the constraints
+(2) Solve the LP relaxation, let x‘ be the found optimal solution
+(3.1) If NO: STOP (LP relaxation solved)
+(3.2) IF YES: Find them, add them to the LP relaxation, and goto (1)
+(3) Decide, if there exist additional restrictions aT
+x<=b0 , so that
+aT
+x‘>b0? separation problem
+What can we do if the solution of the LP-Relaxation is not integral? 
+50
+Branch-and-Cut Approach
+Combination of cutting plane method with Branch-and-Bound
+(1) Try to solve the subproblems (LP-Relaxations) via cutting
+plane method
+(2) If the solution is not integral, then choose a non-integral
+variable and generate two new subproblems:
+(2.1) P1 with additional restrictions xe=0
+(2.2) P2 with additional restrictions xe=1 
+51
+separation
+problem
+Branch-and-Cut (Idea)
+• Solve relaxations with cutting plane method
+• Branch, if no cutting planes are found, but the solution is not
+feasible (integral)
+• Find good feasible solutions based on fractional solutions
+• Fathom non-profitable subtrees
+Cut
+Branch
+Bound
+Exploit
+52
+Branch-and-Cut (Idea)
+Bound Cut Branch
+53
+A typical B&C Computation
+Maximization
+Problem
+54
+Branch-and-Cut in Practice
+Branch-and-Cut approaches solve ILPs to optimality
+Problem: Worst case runtime could be exponential
+Practice shows that combinatorial optimization problems
+can often be solved to optimality in moderate running time
+using Branch-and-Cut algorithms.
+Best general ILP State-of-the-Art software is commercial
+(free for students and use for scientific problems): Gurobi
+and/or CPLEX
+55
+4.5 Experimental Results
+• Here: Results for Maximum Acyclic Subgraph Problem
+[Grötschel, Jünger, Reinelt 2022]
+(equivalently: Minimum Feedback Arc Set Problem, where the
+weight of the deleted arcs needs to be minimized)
+• Graphs by Imase and Itoh: 100 – 120 vertices, 328 – 696 arcs
+• Running times for approaches:
+– „triangles“: add arcs to get complete graph, then solve LOP
+by inserting all triangles into the initial LP relaxation
+– „cycles“: directly work on given graphs, separation for cycle
+inequalities
+LOP for l=79 is solvable within 3 seconds on a notebook
+via a simple Branch-and-Cut / cutting plane approach.
+56
+Running time for Maximum Acyclic
+Subgraph Instances in seconds
+0
+10
+20
+30
+40
+50
+60
+70
+80
+496 594 696 328 440 546 654 360
+t_triangles[sec] t_cycles[sec]
+Instance with 764 arcs: t_triangles= 3438 sec vs. t_cycles=358 sec
+57
+PACE Challenge 2024: One-sided
+Crossing Minimization
+Image source: https://pacechallenge.org/2024/
+58
+PACE 2024 Challenge
+3 Tracks
+§ Exact Algorithms, Heuristic Algorithms, Parameterized
+Algorithms for instances with small cutwidth
+§ November 2023 – June 2024
+Exact Track
+§ 100 public instances and 100 private instances (known
+only to PACE organizers)
+§ |V|∈ [562,…,32.691], on average |V|= 4.183
+§ |E|∈ [445,…,32.807], on average |E|= 4464
+§ up to 300|V| crossings
+§ Time limit: 30 minutes on their system (cloud server
+optil.io for training), memory limit 8GB
+Source: https://pacechallenge.org/2024/
+59
+How did we win the PACE challenge?
+• Setup first LP relaxation without any cycle constraints
+• Repeat
+– x ß Solve current LP relaxation à dual bound
+– solve the separation problem for cycle constraints
+– Separate and add cycle constraints violated by the
+solution values or prove that none exist
+– Apply heuristic à primal bound
+• Until no cycle constraints are violated
+• If the LP solution values are integral then backtrack
+• Else branch by choosing a fractional variable and setting it
+to 1 resp. 0 à branch
+Basic program
+60
+Observation 1: Separation is slow
+Solution: Replace exhaustive enumeration of all 3-cycles by the
+depth first search in graph that only contains edges (i,j) with xij > 0.
+Search for violated 3-cycles on all back edges.
+Source: Paul J. Jünger, 2024, Talk at IPEC 2024
+61
+Observation 2: ILPs get very large
+Solution 1: Instance decomposition
+The red and the blue component (both including node 5) can be
+optimized independently
+Source: Paul J. Jünger, 2024, Talk at IPEC 2024
+62
+Observation 2: ILPs get very large
+Solution 2: Variable fixing
+• If for any pair of nodes bi
+,bj ∈ B, we have cij = 0 and cji >0, then
+every optimal solution of (LOP) satisfies xij = 1.
+• This follows from FPT literature: Dujmović and Whitesides (2004)
+Source: Paul J. Jünger, 2024, Talk at IPEC 2024
+63
+Observation 3: Often Optimum is found early …
+... but finding a feasible solution with that value takes a long time.
+Solution: Arbitrary Ordering
+Solve (LOP) only with non-zero coefficient variables to obtain
+partial ordering πP, infer other variables from topologically sorting
+the bottom nodes with respect to the partial ordering πP.
+Source: Paul J. Jünger, 2024, Talk at IPEC 2024
+64
+Observation 4: 3 instances could still not be solved
+Reason: Large integrality gap
+Solution: Moebius ladder inequalities
+Heuristic separation of size 6 Moebius ladders
+Source: Paul J. Jünger, 2024, Talk at IPEC 2024
+65
+PACE Challenge: Our results on training instances
+99 out of 100 public instances solved (Instance 92 remains unsolved)
+Source: Paul J. Jünger, 2024, Talk at IPEC 2024
+66
+Results of the Exact Track
+Source: https://pacechallenge.org/2024/results/
+1st rank in exact track
+67
+Results of the
+Parameterized
+Track
+Source: https://pacechallenge.org/2024/results/
+3rd rank in
+parameterized
+track
+Total time in seconds
+68
+PACE 2026 Challenge has started:
+Maximum-Agreement Forest Problem arising in Phylogenetics
+see https://pacechallenge.org/2026/
+Your Chance!
+Submission server opens: April 2026
+Final submisison: July 2026
