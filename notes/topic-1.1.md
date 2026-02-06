@@ -3,19 +3,23 @@
 ## Table of Contents
 
 1. [Shortest Path Foundations](#shortest-path-foundations)
-2. [Centrality Indices](#centrality-indices)
-3. [⚠️ Betweenness Centrality — EXAM CRITICAL](#️-betweenness-centrality--exam-critical)
-4. [The Basic Betweenness Algorithm](#the-basic-betweenness-algorithm)
-5. [⚠️ Brandes' Algorithm — FULL DEPTH REQUIRED](#️-brandes-algorithm--full-depth-required)
-6. [Brandes By Hand: One Table Method](#brandes-by-hand-one-table-method)
-7. [Worked Example: Full Brandes Trace](#worked-example-full-brandes-trace)
-8. [Exam Triage](#exam-triage)
-9. [Exercise 3.3: Extending Brandes](#exercise-33-extending-brandes)
-10. [Exercise 3.4: Centrality on Concrete Graphs](#exercise-34-centrality-on-concrete-graphs)
-11. [Exercise 3.1: DAG Shortest Paths](#exercise-31-dag-shortest-paths)
-12. [Exercise 3.2: Edge-Vertex Centrality Relations](#exercise-32-edge-vertex-centrality-relations)
-13. [Pairing Heaps](#pairing-heaps)
-14. [Exercise 4.2: Betweenness Algorithms for Trees](#exercise-42-betweenness-algorithms-for-trees)
+2. [Graph Data Structures](#graph-data-structures)
+3. [⚠️ Amortized Analysis Refresher — EXAM CRITICAL](#️-amortized-analysis-refresher--exam-critical)
+4. [⚠️ Heaps — Why This Matters for Dijkstra](#️-heaps--why-this-matters-for-dijkstra)
+5. [Centrality Indices](#centrality-indices)
+6. [⚠️ Betweenness Centrality — EXAM CRITICAL](#️-betweenness-centrality--exam-critical)
+7. [The Basic Betweenness Algorithm](#the-basic-betweenness-algorithm)
+8. [⚠️ Brandes' Algorithm — FULL DEPTH REQUIRED](#️-brandes-algorithm--full-depth-required)
+9. [Brandes By Hand: One Table Method](#brandes-by-hand-one-table-method)
+10. [Worked Example: Full Brandes Trace](#worked-example-full-brandes-trace)
+11. [Exam Triage](#exam-triage)
+12. [Exercise 3.3: Extending Brandes](#exercise-33-extending-brandes)
+13. [Exercise 3.4: Centrality on Concrete Graphs](#exercise-34-centrality-on-concrete-graphs)
+14. [Exercise 3.1: DAG Shortest Paths](#exercise-31-dag-shortest-paths)
+15. [Exercise 3.2: Edge-Vertex Centrality Relations](#exercise-32-edge-vertex-centrality-relations)
+16. [Pairing Heaps](#pairing-heaps)
+17. [Exercise 4.2: Betweenness Algorithms for Trees](#exercise-42-betweenness-algorithms-for-trees)
+18. [Tree Center](#tree-center)
 
 ---
 
@@ -116,6 +120,382 @@ If the examiner asks: "Why is Fibonacci Heap faster?"
 **STOP. Explain back to me**: Why does DecreasePrioQ being O(1) matter? What's the total runtime improvement?
 
 **Answer**: Dijkstra calls DecreasePrioQ at most once per edge, so m times total. With binary heap, each call is O(log n), giving O(m log n) for all decrease operations. With Fibonacci heap, each call is O(1) amortized, giving O(m) total. Combined with n ExtractMin operations at O(log n) each, the total drops from O((n+m) log n) to O(m + n log n). On dense graphs where m ≈ n², this is a significant improvement—from O(n² log n) to O(n²).
+
+---
+
+## Graph Data Structures
+
+Choosing the right structure depends on whether the graph is **sparse** or **dense**.
+
+| Data Structure   | Space  | Iterate Neighbors | Verify Edge (v,w)     |
+| ---------------- | ------ | ----------------- | --------------------- |
+| Adjacency Matrix | O(V²)  | O(V)              | O(1)                  |
+| Adjacency List   | O(V+E) | O(deg(v))         | O(deg(v))             |
+| Adjacency Set    | O(V+E) | O(deg(v))         | O(log deg(v)) or O(1) |
+
+### When to Use Which?
+
+**Dense graphs (m ≈ V²)**: Use **Adjacency Matrix**
+
+- Almost every pair has an edge → big V×V grid is acceptable
+- O(1) edge lookup is the advantage
+
+**Sparse graphs (m ≪ V²)**: Use **Adjacency List**
+
+- Don't waste memory on edges that don't exist
+- O(deg) neighbor iteration is fine when degree is small
+
+### Example: Dense Graph
+
+```
+Edges: A-B, A-C, A-D, B-D, C-D
+
+Adjacency Matrix:           Adjacency List:
+    A  B  C  D              A → [B, C, D]
+A   0  1  1  1              B → [A, D]
+B   1  0  0  1              C → [A, D]
+C   1  0  0  1              D → [A, B, C]
+D   1  1  1  0
+```
+
+**Winner for dense**: Matrix — minimal wasted space, O(1) edge lookups.
+
+### Example: Sparse Graph (6 nodes, 4 edges)
+
+```
+Edges: A-B, A-C, E-F
+
+Matrix (mostly zeros):      List (compact):
+    A  B  C  D  E  F        A → [B, C]
+A   0  1  1  0  0  0        B → [A]
+B   1  0  0  0  0  0        C → [A]
+C   1  0  0  0  0  0        D → []
+D   0  0  0  0  0  0        E → [F]
+E   0  0  0  0  0  1        F → [E]
+F   0  0  0  0  1  0
+```
+
+**Winner for sparse**: List — no wasted space, O(degree) neighbor iteration.
+
+---
+
+## ⚠️ Amortized Analysis Refresher — EXAM CRITICAL
+
+⚠️ Exam question: "Explain the amortized analysis of Fibonacci Heaps."
+
+You cannot explain Fibonacci heap runtimes without understanding amortized analysis.
+
+### Intuition: The Spike and The Interval
+
+Amortized analysis guarantees the average performance of each operation in a **worst-case sequence**.
+
+- **The Spike (Actual Cost cᵢ)**: Standard worst-case analysis assumes every operation hits the maximum possible cost
+- **The Interval**: Amortized analysis spreads that rare "spike" over the entire sequence
+
+**Note**: This differs from _Average Case Analysis_, which relies on probabilistic inputs. Amortized analysis is a **hard guarantee** for any valid sequence.
+
+### Formal Definition
+
+Let c₁, c₂, ..., cₙ be the actual costs of a sequence of n operations.
+Let ĉ₁, ĉ₂, ..., ĉₙ be the amortized costs assigned to these operations.
+
+For the amortized analysis to be valid:
+$$\sum_{i=1}^{n} c_i \leq \sum_{i=1}^{n} \hat{c}_i$$
+
+**Translation**: The total "credit" claimed must cover the total "bill" paid.
+
+### The Potential Method
+
+We define a potential function Φ(D) that maps the state of the data structure to a real number.
+
+**Amortized cost formula**:
+$$\hat{c}_i = c_i + \Phi(D_i) - \Phi(D_{i-1})$$
+
+By summing, we observe a **telescoping sum**:
+$$\sum_{i=1}^{n} \hat{c}_i = \sum_{i=1}^{n} c_i + \Phi(D_n) - \Phi(D_0)$$
+
+**Constraint**: To ensure Σcᵢ ≤ Σĉᵢ, we require Φ(Dₙ) ≥ Φ(D₀).
+
+---
+
+### The "Tripling" Data Structure — Mock Exam Practice
+
+**The Problem**: A data structure has the following costs for operation k:
+
+- **Rule A**: If k is an exact power of 3 (1, 3, 9, 27, 81...), the cost is k
+- **Rule B**: Otherwise, the cost is 1
+
+**Task**: Prove the amortized cost is O(1).
+
+**Intuitive calculation for the interval ending at k=27**:
+
+1. Previous spike was at k=9
+2. Cheap operations in interval: 27 - 9 - 1 = 17
+3. To cover spike of 27 in 17 steps: 27/17 ≈ 1.58 → round up to **2**
+4. Amortized cost = 1 (actual work) + 2 (savings) = **3**
+
+#### The Accounting Method
+
+Assign a fixed charge of **3 credits** to every operation.
+
+**Case A: Cheap Operation (k ≠ 3ʲ)**
+
+- Amortized Charge: 3 credits
+- Actual Cost: 1 credit
+- Action: Pay 1, bank **2 credits**
+
+**Case B: Spike Operation (k = 3ʲ)**
+
+- Bill: 3ʲ
+- Saved since last spike: ~2 × (2·3ʲ⁻¹) = 4·3ʲ⁻¹
+- Since 4·3ʲ⁻¹ > 3ʲ, we can pay the bill ✓
+
+#### The Potential Method
+
+Define: Φ(Dₖ) = 2·(k - 3^⌊log₃ k⌋)
+
+**Case A**: Cheap operation (k not a power of 3)
+
+- ΔΦ = 2
+- Amortized cost = 1 + 2 = **3** ✓
+
+**Case B**: Spike operation (k = 3ʲ)
+
+- Φ(k) = 0 (new spike, distance = 0)
+- Φ(k-1) ≈ 4k/3
+- Amortized cost = k + 0 - 4k/3 = -k/3 ≤ 3 ✓
+
+---
+
+## ⚠️ Heaps — Why This Matters for Dijkstra
+
+⚠️ Exam question: "What are the runtimes of Fibonacci Heaps? How does the amortized analysis work?"
+
+Dijkstra's algorithm repeatedly:
+
+1. **Extract-min** — get the next closest vertex
+2. **Decrease-key** — relax edges and update distances
+
+With n vertices and m edges:
+
+- n extract-min operations
+- Up to m decrease-key operations
+
+| Priority Queue | Extract-Min     | Decrease-Key    | Dijkstra Total     |
+| -------------- | --------------- | --------------- | ------------------ |
+| Binary Heap    | O(log n)        | O(log n)        | O((n+m) log n)     |
+| Fibonacci Heap | O(log n) amort. | **O(1) amort.** | **O(n log n + m)** |
+
+---
+
+### Binary Heap
+
+A binary heap satisfies two properties:
+
+**1. Structure Property (Complete Binary Tree)**
+
+```
+       Valid:              Invalid:
+         10                   10
+        /  \                 /  \
+       20   30              20   30
+      /  \  /              /    /  \
+     40  50 60            40   50   60
+                               ^
+                          gap not allowed
+```
+
+**2. Heap Property (Ordering)**
+
+- **Min-Heap**: Every parent ≤ its children. Root is minimum.
+- **Max-Heap**: Every parent ≥ its children. Root is maximum.
+
+**Critical insight**: The heap property only enforces **parent-child** relationships, NOT sibling relationships.
+
+#### Array Representation
+
+```
+Tree:           Array (1-indexed):
+       5        [_, 5, 10, 15, 20, 25]
+      / \           1   2   3   4   5
+     10  15
+    /  \
+   20   25
+```
+
+**Index Formulas (1-indexed)**:
+
+- Parent of i: ⌊i/2⌋
+- Left child of i: 2i
+- Right child of i: 2i + 1
+
+#### Operations
+
+**Insert(key)** — O(log n)
+
+1. Place new key at end (maintains completeness)
+2. **Bubble up**: Compare with parent, swap if smaller, repeat
+
+**Extract-Min** — O(log n)
+
+1. Save root (the minimum)
+2. Move last element to root
+3. **Bubble down**: Swap with smaller child, repeat
+
+**Decrease-Key(i, new_key)** — O(log n)
+
+1. Update key at position i
+2. Bubble up (element might be smaller than parent now)
+
+**The problem**: To call decrease-key, you need the **index i** of the element. In Dijkstra, this requires an auxiliary **position map**: pos[v] = index in heap.
+
+**Build-Heap(array)** — O(n), NOT O(n log n)!
+
+**Why O(n)?** — Common exam question:
+
+- Nodes at height h do at most h swaps during bubble-down
+- There are ⌈n/2^(h+1)⌉ nodes at height h
+- Total: Σ (n/2^(h+1))·O(h) = O(n)·Σ(h/2^(h+1)) = O(n)
+
+The sum Σ h/2^(h+1) converges to a constant (equals 1).
+
+#### Binary Heap Runtime Summary
+
+| Operation    | Runtime  | Notes                          |
+| ------------ | -------- | ------------------------------ |
+| Insert       | O(log n) | Bubble up                      |
+| Extract-Min  | O(log n) | Bubble down                    |
+| Find-Min     | O(1)     | Just look at root              |
+| Decrease-Key | O(log n) | Bubble up (need position map!) |
+| Build-Heap   | O(n)     | Bottom-up heapify              |
+| Merge        | O(n)     | Must rebuild entirely          |
+
+---
+
+### ⚠️ Fibonacci Heap — FULL DEPTH REQUIRED
+
+⚠️ Exam question: "How do Fibonacci heaps achieve O(1) decrease-key? Explain the mark bit and cascading cuts."
+
+A Fibonacci heap is a collection of heap-ordered trees with relaxed structure:
+
+- Trees of **any shape** are allowed
+- Multiple trees connected via **doubly linked root list**
+- Each node stores: parent, degree, left/right siblings, **mark bit**
+
+```
+Root list (doubly linked):
+  [Tree1] ←→ [Tree2] ←→ [Tree3] ←→ ...
+     ↑                              |
+     └──────────────────────────────┘
+
+Min pointer → smallest root
+```
+
+#### Why Do We Mark Nodes?
+
+**Exam question**: "Why do we bother with marks in Fibonacci heaps?"
+
+**Answer**: We need to bound the maximum degree of any node. This bound is crucial for proving the runtime of Extract-Min.
+
+- If we **never cut** parents: trees become wide and flat → node can have too many children → Extract-Min becomes expensive
+- If we **always cut** immediately: trees become tall and thin (like linked lists) → degree bound breaks
+
+The marking rule strikes a balance: it ensures a node of degree k has at least ~F\_{k+2} descendants (Fibonacci numbers), so maximum degree is O(log n).
+
+#### Operations
+
+**Insert** — O(1) amortized
+
+- Create a single-node tree
+- Add to root list
+- Update min pointer if needed
+
+**Why stay lazy?** We don't consolidate during Insert because that would destroy the O(1) cost. We delay consolidation until Extract-Min.
+
+**Extract-Min** — O(log n) amortized
+
+1. Remove the minimum root
+2. Add all its children to the root list
+3. **Consolidate**: link trees of equal degree until no two roots have the same degree
+
+**Actual vs Amortized cost**:
+
+- **Worst-case actual**: O(n) if all nodes are in root list
+- **Amortized**: O(D(n)) where D(n) = max degree = O(log n)
+
+**Decrease-Key** — O(1) amortized
+
+1. Decrease the key value
+2. If heap property violated (new value < parent), **cut** the node
+3. Move cut node to root list
+4. If parent was marked, trigger **cascading cut**
+
+**Cascading Cut**: If a marked node loses another child, it's also cut and moved to root list. Repeat upward.
+
+#### The Mark Bit — Precise Definition
+
+A node x becomes **marked** if it has lost **exactly one** child since the last time it was made a child of another node.
+
+- Newly created nodes: **unmarked**
+- Node loses first child: becomes **marked**
+- Marked node loses second child: **cut immediately** (cascading cut)
+- Node moved to root list: becomes **unmarked**
+
+#### The Potential Function
+
+$$\Phi(H) = t(H) + 2m(H)$$
+
+where:
+
+- t(H) = number of trees in root list
+- m(H) = number of marked nodes
+
+**Why the coefficient 2?** — Classic exam question
+
+When a cascading cut happens:
+
+- Marked node is cut → moves to root list
+- t(H) increases by 1 (bad)
+- Node becomes unmarked → m(H) decreases by 1
+
+If formula was t + m: change = +1 - 1 = 0 (no savings!)
+With t + 2m: change = +1 - 2 = **-1** (releases 1 credit to pay for the cut)
+
+#### Amortized Analysis of Extract-Min
+
+**Key insight**: Consolidation links trees of equal degree, reducing t(H).
+
+Each link operation:
+
+- Reduces t(H) by 1 (two trees become one)
+- Potential drops by 1
+- This "pays" for the link
+
+**Result**: Amortized cost of Extract-Min = O(D(n)) = O(log n)
+
+#### Fibonacci Heap Runtime Summary
+
+| Operation    | Actual (worst) | Amortized    |
+| ------------ | -------------- | ------------ |
+| Insert       | O(1)           | O(1)         |
+| Find-Min     | O(1)           | O(1)         |
+| Extract-Min  | O(n)           | **O(log n)** |
+| Decrease-Key | O(n)           | **O(1)**     |
+| Merge        | O(1)           | O(1)         |
+| Delete       | O(n)           | O(log n)     |
+
+---
+
+### Quiz Time (Active Recall)
+
+**1. Conceptual**: Why don't we merge trees during Insert?
+_Answer_: That would make Insert O(log n). We want Insert O(1) so we can handle massive data quickly. We procrastinate until Extract-Min.
+
+**2. Runtime**: What is the **worst-case** cost of one Extract-Min?
+_Answer_: O(n). If we did n inserts, we have n roots. Must look at all of them. But **amortized** is O(log n) because we paid for this work using savings from cheap inserts.
+
+**3. The Mark**: If a node is marked, what does it tell you about its history?
+_Answer_: It has already lost one child while under its current parent. If it loses another, it will be cut immediately (Cascading Cut).
 
 ---
 
@@ -1282,5 +1662,163 @@ where s_i are the sizes of components after removing v.
 Why is tree betweenness O(n) while general graph betweenness is O(|V||E|)?
 
 **Answer**: In trees, there's exactly one shortest path between any pair, so we don't need to run SSSP from every source. The structure (subtree sizes) tells us everything we need with one traversal.
+
+---
+
+## Tree Center
+
+The **center** of a tree is the set of vertices that minimize the maximum distance to any other vertex (i.e., minimize eccentricity).
+
+### Show That the Center of a Tree Has at Most Two Vertices
+
+#### Intuition (Visual Argument)
+
+Think of a tree as strings (edges) and knots (vertices). If you lift the tree at its "center," the longest paths hanging down are balanced.
+
+**Burning process visualization**:
+
+1. Ignite all leaves simultaneously
+2. Fire spreads inward at the same speed along every edge
+3. Fire stops at the geometric center of the tree
+
+Two cases:
+
+- **Even diameter** (e.g., A-B-**C**-D-E): Fire meets at a **single vertex** C
+- **Odd diameter** (e.g., A-**B**-**C**-D): Fire meets on an edge → **both endpoints** B, C form the center
+
+Hence: |Center| ≤ 2 ✓
+
+#### Formal Proof (Leaf-Pruning)
+
+**Observation**: A leaf cannot be a center of a tree with more than 2 vertices.
+
+- Its unique neighbor is strictly closer to all other vertices.
+
+**Reduction Step**:
+
+- Let T be a tree with n > 2
+- Remove all leaves simultaneously → smaller tree T'
+
+**Crucial Invariant** — exam-critical:
+
+> The center of T' is exactly the same as the center of T.
+
+**Why?** Removing all leaves shortens every longest path by exactly one edge. Thus, eccentricity of every remaining vertex decreases by one, and vertices with minimum eccentricity remain unchanged.
+
+**Termination**:
+
+- Repeat until n ≤ 2
+- If one vertex remains → it is the center
+- If two adjacent vertices remain → both are centers
+
+∴ |C| ≤ 2
+
+---
+
+### Linear-Time Algorithms to Compute the Center
+
+#### Approach 1: Peeling Algorithm (Leaf Pruning)
+
+This directly implements the proof above. Ideal when center is defined via eccentricity.
+
+```
+PeelCenter(T):
+    Compute degree of every vertex
+    Q = queue of all vertices with degree 1 (leaves)
+    remaining = n
+
+    while remaining > 2:
+        layer_size = |Q|
+        for i = 1 to layer_size:
+            u = Q.dequeue()
+            remaining -= 1
+            for each neighbor v of u:
+                degree[v] -= 1
+                if degree[v] == 1:
+                    Q.enqueue(v)
+
+    return remaining vertices (1 or 2)
+```
+
+**Why stop when remaining ≤ 2?**
+If we continued, we would delete the center itself.
+
+Example: tree with two vertices A-B. Both are leaves. If removed → empty set. Stopping early preserves the correct answer.
+
+**Runtime**: O(V) — each vertex enters/leaves queue once, each edge processed twice.
+
+---
+
+#### Approach 2: Diameter (Two-BFS) Method
+
+Convenient if you also need the diameter.
+
+```
+DiameterCenter(T):
+    1. BFS from arbitrary vertex x → find farthest vertex u
+    2. BFS from u → find farthest vertex v
+    3. Path u → v is the diameter
+    4. Center = middle vertex(es) of this path
+```
+
+**Runtime**: O(V)
+
+**Comparison**:
+
+- Use **Peeling** if question emphasizes eccentricity or structural arguments
+- Use **2-BFS** if diameter computation is also needed
+
+---
+
+### Why Tree Algorithms Fail on Graphs with Cycles
+
+**Example: Triangle with a Tail**
+
+Vertices A, B, C form a cycle; D is attached to C.
+
+**Peeling Algorithm**:
+
+- Initial leaves: {D}
+- After removing D, all remaining vertices have degree 2
+- No leaves remain → **algorithm gets stuck**
+
+**2-BFS Algorithm**:
+
+- In this specific graph, 2-BFS might return C (which is indeed a center)
+- But this is **accidental**
+
+**Counterexample (Cycle)**:
+
+- In a cycle, every vertex is a center
+- 2-BFS returns only one or two vertices
+- **Not correct for general graphs**
+
+**Conclusion (exam warning)**:
+
+- Peeling **fails on cycles** because cycles have no leaves
+- 2-BFS is **correct for trees**, not for general graphs
+
+---
+
+### Step-by-Step Simulation: Star Graph
+
+```
+    A   B   C   D   E
+     \  |  /  /  /
+      \ | / / /
+        X (center)
+```
+
+**Execution**:
+
+- Initial queue: {A, B, C, D, E}, RemainingNodes = 6
+- Remove all five leaves in one layer
+- X remains as the only vertex
+
+**Result**: Center = {X}
+
+**Exam Gotcha**: "Why wasn't X removed as soon as its degree became 1?"
+
+**Answer**: The algorithm removes vertices **layer by layer**. X becomes a leaf only **after** the current layer is fully removed. Removing it earlier would mix layers and invalidate the argument.
 
 ---
